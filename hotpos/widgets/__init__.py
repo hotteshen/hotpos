@@ -10,6 +10,6 @@ class CenteredLabel(QLabel):
 
     def setRelativeFontSize(self, size: int):
         font = self.font()
-        font.setPointSize(14)
+        font.setPointSize(size)
         self.setFont(font)
         return self
