@@ -2,9 +2,9 @@ import sys
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, QTime, QDate
 
-from .label import Label
+from .label import LabelWidget
 
-class Clock(QWidget):
+class ClockWidget(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -13,9 +13,9 @@ class Clock(QWidget):
         root_layout = QVBoxLayout()
         self.setLayout(root_layout)
 
-        self.time_label = Label().setSize(24).setCenter()
+        self.time_label = LabelWidget().setSize(24).setCenter()
         root_layout.addWidget(self.time_label)
-        self.date_label = Label().setSize(18).setCenter()
+        self.date_label = LabelWidget().setSize(18).setCenter()
         root_layout.addWidget(self.date_label)
 
         timer = QTimer(self)

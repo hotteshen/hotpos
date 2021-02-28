@@ -1,13 +1,13 @@
-from hotpos.widgets.table import OrdersTable
+from hotpos.widgets.table import OrdersTableWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton
 
-from ..widgets.group_box import GroupBox
-from ..widgets.label import Label
-from ..widgets.table import OrdersTable
+from ..widgets.group_box import GroupBoxWidget
+from ..widgets.label import LabelWidget
+from ..widgets.table import OrdersTableWidget
 
 
-class Home(QWidget):
+class HomePage(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,11 +20,11 @@ class Home(QWidget):
         right_layout = QVBoxLayout()
         root_layout.addLayout(right_layout, 2)
 
-        gb = GroupBox()
+        gb = GroupBoxWidget()
         left_layout.addWidget(gb)
         gb_root = gb.getRootLayout()
-        gb_root.addWidget(Label('Late orders').setSize(20))
-        late_orders_table = OrdersTable()
+        gb_root.addWidget(LabelWidget('Late orders').setSize(20))
+        late_orders_table = OrdersTableWidget()
         late_orders_table.setData([
             ['001212', '15900', '2020-04-16'],
             ['001211', '23700', '2020-04-16'],
@@ -32,11 +32,11 @@ class Home(QWidget):
         ])
         gb_root.addWidget(late_orders_table)
 
-        gb = GroupBox()
+        gb = GroupBoxWidget()
         left_layout.addWidget(gb)
         gb_root = gb.getRootLayout()
-        gb_root.addWidget(Label('Upcoming orders').setSize(20))
-        upcoming_orders_table = OrdersTable()
+        gb_root.addWidget(LabelWidget('Upcoming orders').setSize(20))
+        upcoming_orders_table = OrdersTableWidget()
         upcoming_orders_table.setData([
             ['001212', '15900', '2020-04-16'],
             ['001211', '23700', '2020-04-16'],

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QGroupBox
 
 
-class GroupBox(QGroupBox):
+class GroupBoxWidget(QGroupBox):
 
     def __init__(self, title=None):
         super().__init__()

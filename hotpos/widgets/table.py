@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem
 
 
-class OrdersTable(QTableWidget):
+class OrdersTableWidget(QTableWidget):
 
     def __init__(self, *args):
         QTableWidget.__init__(self, *args)

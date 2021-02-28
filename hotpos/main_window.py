@@ -2,9 +2,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
-from .pages.login import Login
-from .pages.home import Home
-from .widgets.navigation import Navigation
+from .pages.login import LoginPage
+from .pages.home import HomePage
+from .pages.take_away import TakeAwayPage
+from .widgets.navigation import NavigationWidget
 from .config import WINDOW_MIN_SIZE, APP_NAME, RES_PATH
 
 
@@ -21,13 +22,15 @@ class MainWindow(QWidget):
         root_layout = QVBoxLayout()
         self.setLayout(root_layout)
 
-        self.navigation = Navigation()
-        root_layout.addWidget(self.navigation)
+        self.navigation = NavigationWidget()
+        root_layout.addWidget(self.navigation, 0)
 
-        self.login_page = Login()
-        root_layout.addWidget(self.login_page)
-        self.home_page = Home()
-        root_layout.addWidget(self.home_page)
+        self.login_page = LoginPage()
+        root_layout.addWidget(self.login_page, 1)
+        self.home_page = HomePage()
+        root_layout.addWidget(self.home_page, 1)
+        self.take_away_page = TakeAwayPage()
+        root_layout.addWidget(self.take_away_page, 1)
 
         self.showPage('login')
 
@@ -35,8 +38,12 @@ class MainWindow(QWidget):
         self.navigation.hide()
         self.login_page.hide()
         self.home_page.hide()
+        self.take_away_page.hide()
         if page == 'login':
             self.login_page.show()
         elif page == 'home':
             self.navigation.show()
             self.home_page.show()
+        elif page == 'take_away':
+            self.navigation.show()
+            self.take_away_page.show()
