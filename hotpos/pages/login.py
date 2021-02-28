@@ -1,23 +1,24 @@
 from functools import partial
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QPushButton, QSizePolicy, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QPushButton, QSizePolicy, QLineEdit
 
 from ..config import APP_NAME
-from .clock_widget import ClockWidget
-from . import CenteredLabel
+from ..widgets.clock import Clock
+from ..widgets.label import Label
 
 
-class LoginWidget(QWidget):
+class Login(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.app = QApplication.instance()
         self.code = ''
 
         info_layout = QVBoxLayout()
-        logo = CenteredLabel(APP_NAME).setRelativeFontSize(30)
+        logo = Label(APP_NAME).setSize(30).setCenter()
         info_layout.addWidget(logo)
-        clock = ClockWidget()
+        clock = Clock()
         info_layout.addWidget(clock)
 
         display_layout = QHBoxLayout()
@@ -67,3 +68,5 @@ class LoginWidget(QWidget):
         elif code == 'OK':
             if len(self.code) == 4:
                 print(self.code)
+                self.app.main_window.showPage('home')
+

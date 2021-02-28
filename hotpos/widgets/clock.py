@@ -1,10 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-from ..config import APP_NAME
-from . import CenteredLabel
+from .label import Label
 
-
-class ClockWidget(QWidget):
+class Clock(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -12,5 +10,5 @@ class ClockWidget(QWidget):
         root_layout = QVBoxLayout()
         self.setLayout(root_layout)
 
-        logo = CenteredLabel('Clock').setRelativeFontSize(20)
+        logo = Label('Clock').setSize(20).setCenter()
         root_layout.addWidget(logo)
