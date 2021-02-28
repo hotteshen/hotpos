@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QPushButton, QSizePolicy, QLineEdit
 
@@ -10,6 +12,7 @@ class LoginWidget(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.code = ''
 
         info_layout = QVBoxLayout()
         logo = CenteredLabel(APP_NAME).setRelativeFontSize(30)
@@ -22,6 +25,7 @@ class LoginWidget(QWidget):
         for code_input in self.code_inputs:
             code_input.setAlignment(Qt.AlignCenter)
             code_input.setEchoMode(QLineEdit.Password)
+            code_input.setStyleSheet('QLineEdit { font-size: %dpx; border: none; }' %  30)
             code_input.setReadOnly(True)
             display_layout.addWidget(code_input)
 
@@ -36,7 +40,7 @@ class LoginWidget(QWidget):
         positions = [(i, j) for i in range(4) for j in range(3)]
         for position, code in zip(positions, key_codes):
             button = QPushButton(str(code))
-            # button.clicked.connect(partial(self.buttonPress, code))
+            button.clicked.connect(partial(self.buttonPress, code))
             button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
             button_layout.addWidget(button, *position)
 
@@ -50,3 +54,16 @@ class LoginWidget(QWidget):
         root_layout.addLayout(info_layout, 1)
         root_layout.addLayout(code_layout, 1)
         self.setLayout(root_layout)
+
+    def buttonPress(self, code):
+        if code in range(10):
+            if len(self.code) < 4:
+                self.code_inputs[len(self.code)].setText(str(code))
+                self.code += str(code)
+        elif code == 'DEL':
+            for code_input in self.code_inputs:
+                code_input.setText('')
+                self.code = ''
+        elif code == 'OK':
+            if len(self.code) == 4:
+                print(self.code)
