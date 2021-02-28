@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from .pages.login import Login
 from .pages.home import Home
+from .widgets.navigation import Navigation
 from .config import WINDOW_MIN_SIZE, APP_NAME, RES_PATH
 
 
@@ -20,6 +21,9 @@ class MainWindow(QWidget):
         root_layout = QVBoxLayout()
         self.setLayout(root_layout)
 
+        self.navigation = Navigation()
+        root_layout.addWidget(self.navigation)
+
         self.login_page = Login()
         root_layout.addWidget(self.login_page)
         self.home_page = Home()
@@ -28,9 +32,11 @@ class MainWindow(QWidget):
         self.showPage('login')
 
     def showPage(self, page: str):
+        self.navigation.hide()
         self.login_page.hide()
         self.home_page.hide()
         if page == 'login':
             self.login_page.show()
         elif page == 'home':
+            self.navigation.show()
             self.home_page.show()
