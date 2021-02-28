@@ -16,10 +16,12 @@ class Login(QWidget):
         self.code = ''
 
         info_layout = QVBoxLayout()
+        info_layout.addWidget(QWidget(), 1)
         logo = Label(APP_NAME).setSize(30).setCenter()
-        info_layout.addWidget(logo)
+        info_layout.addWidget(logo, 0)
         clock = Clock()
-        info_layout.addWidget(clock)
+        info_layout.addWidget(clock, 0)
+        info_layout.addWidget(QWidget(), 1)
 
         display_layout = QHBoxLayout()
         self.code_inputs = [QLineEdit(), QLineEdit(), QLineEdit(), QLineEdit()]
