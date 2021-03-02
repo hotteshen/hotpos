@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget, QLabel, QListWidget, QListWidg
 
 from ..widgets.group_box import GroupBoxWidget
 from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
+from ..widgets.sub_category_list import SubCategoryListWidget
 
 
 class TakeAwayPage(QWidget):
@@ -18,9 +19,10 @@ class TakeAwayPage(QWidget):
         gb = GroupBoxWidget()
         root_layout.addWidget(gb, 1)
         gb_root = gb.getRootLayout()
-        self.sub_category_list_widget = QListWidget()
-        self.sub_category_list_widget.setFlow(QListWidget.LeftToRight)
+
+        self.sub_category_list_widget = SubCategoryListWidget()
         gb_root.addWidget(self.sub_category_list_widget, 0)
+
         self.item_list_widget = QListWidget()
         gb_root.addWidget(self.item_list_widget, 1)
 
@@ -65,8 +67,7 @@ class TakeAwayPage(QWidget):
         self.main_category_list_widget.setCurrentRow(main_cat)
         self.sub_category_list_widget.clear()
         for cat in self.category_data[main_cat]['sub_category_list']:
-            list_item = QListWidgetItem(cat['name'])
-            self.sub_category_list_widget.addItem(list_item)
+            self.sub_category_list_widget.addItem(cat['name'])
             if sub_cat >= 0:
                 self.showItem(main_cat=main_cat, sub_cat=sub_cat)
 
