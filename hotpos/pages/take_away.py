@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QHBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem
 
 from ..widgets.group_box import GroupBoxWidget
+from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
 
 
 class TakeAwayPage(QWidget):
@@ -11,7 +12,7 @@ class TakeAwayPage(QWidget):
         root_layout = QHBoxLayout()
         self.setLayout(root_layout)
 
-        self.main_category_list_widget = QListWidget()
+        self.main_category_list_widget = MainCategoryListWidget()
         root_layout.addWidget(self.main_category_list_widget, 0)
 
         gb = GroupBoxWidget()
@@ -30,7 +31,7 @@ class TakeAwayPage(QWidget):
         self.category_data = [
             {
                 'name': 'Food',
-                'image': None,
+                'image': 'main-category-food.png',
                 'sub_category_list': [
                     {
                         'name': 'All',
@@ -44,7 +45,7 @@ class TakeAwayPage(QWidget):
             },
             {
                 'name': 'Drinks',
-                'image': None,
+                'image': 'main-category-drink.png',
                 'sub_categorie_list': [],
             },
         ]
@@ -53,8 +54,8 @@ class TakeAwayPage(QWidget):
     def showMainCategory(self, main_cat=-1):
         self.main_category_list_widget.clear()
         for cat in self.category_data:
-            list_item = QListWidgetItem(cat['name'])
-            self.main_category_list_widget.addItem(list_item)
+            cat_obj = MainCategory(cat['name'], cat['image'])
+            self.main_category_list_widget.addItem(cat_obj)
             if main_cat >= 0:
                 self.showSubCategory(main_cat=main_cat, sub_cat=0)
 
