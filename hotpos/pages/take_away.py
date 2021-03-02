@@ -1,8 +1,10 @@
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QHBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem
 
 from ..widgets.group_box import GroupBoxWidget
 from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
 from ..widgets.sub_category_list import SubCategoryListWidget
+from ..widgets.item_list import ItemListWidget, Item
 
 
 class TakeAwayPage(QWidget):
@@ -25,7 +27,7 @@ class TakeAwayPage(QWidget):
         self.sub_category_list_widget.itemClicked.connect(self.showItemList)
         gb_root.addWidget(self.sub_category_list_widget, 0)
 
-        self.item_list_widget = QListWidget()
+        self.item_list_widget = ItemListWidget()
         gb_root.addWidget(self.item_list_widget, 1)
 
         gb = GroupBoxWidget(title='Order ID: #18')
@@ -41,15 +43,23 @@ class TakeAwayPage(QWidget):
                         'name': 'All',
                         'image': None,
                         'item_list': [
-                            {'name': 'Burger', 'image': None},
-                            {'name': 'Chicken Wings', 'image': None},
+                            {'name': 'Wine', 'image': 'item-wine.jpg'},
+                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg'},
+                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
+                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
+                            {'name': 'Wine', 'image': 'item-wine.jpg'},
+                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg'},
+                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
+                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
                         ],
                     },
                     {
                         'name': 'In Stock',
                         'image': None,
                         'item_list': [
-                            {'name': 'Burger', 'image': None},
+                            {'name': 'Wine', 'image': 'item-wine.jpg'},
                         ],
                     },
                 ],
@@ -82,5 +92,5 @@ class TakeAwayPage(QWidget):
         main_cat = self.main_category_list_widget.currentRow()
         sub_cat = self.sub_category_list_widget.currentRow()
         for it in self.category_data[main_cat]['sub_category_list'][sub_cat]['item_list']:
-            list_item = QListWidgetItem(it['name'])
-            self.item_list_widget.addItem(list_item)
+            item = Item(it['name'], it['image'])
+            self.item_list_widget.addItem(item)
