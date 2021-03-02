@@ -14,6 +14,7 @@ class TakeAwayPage(QWidget):
         self.setLayout(root_layout)
 
         self.main_category_list_widget = MainCategoryListWidget()
+        self.main_category_list_widget.itemClicked.connect(self.showSubCategoryList)
         root_layout.addWidget(self.main_category_list_widget, 0)
 
         gb = GroupBoxWidget()
@@ -21,6 +22,7 @@ class TakeAwayPage(QWidget):
         gb_root = gb.getRootLayout()
 
         self.sub_category_list_widget = SubCategoryListWidget()
+        self.sub_category_list_widget.itemClicked.connect(self.showItemList)
         gb_root.addWidget(self.sub_category_list_widget, 0)
 
         self.item_list_widget = QListWidget()
@@ -43,41 +45,42 @@ class TakeAwayPage(QWidget):
                             {'name': 'Chicken Wings', 'image': None},
                         ],
                     },
+                    {
+                        'name': 'In Stock',
+                        'image': None,
+                        'item_list': [
+                            {'name': 'Burger', 'image': None},
+                        ],
+                    },
                 ],
             },
             {
                 'name': 'Drinks',
                 'image': 'main-category-drink.png',
-                'sub_categorie_list': [],
+                'sub_category_list': [],
             },
         ]
-        self.showMainCategory(main_cat=0)
+        self.showMainCategoryList()
 
-    def showMainCategory(self, main_cat=-1):
+    def showMainCategoryList(self):
+        self.item_list_widget.clear()
+        self.sub_category_list_widget.clear()
         self.main_category_list_widget.clear()
         for cat in self.category_data:
             cat_obj = MainCategory(cat['name'], cat['image'])
             self.main_category_list_widget.addItem(cat_obj)
-            if main_cat >= 0:
-                self.showSubCategory(main_cat=main_cat, sub_cat=0)
 
-    def showSubCategory(self, main_cat=-1, sub_cat=-1):
-        if main_cat < 0:
-            return
-        self.main_category_list_widget.setCurrentRow(main_cat)
+    def showSubCategoryList(self):
+        self.item_list_widget.clear()
         self.sub_category_list_widget.clear()
+        main_cat = self.main_category_list_widget.currentRow()
         for cat in self.category_data[main_cat]['sub_category_list']:
             self.sub_category_list_widget.addItem(cat['name'])
-            if sub_cat >= 0:
-                self.showItem(main_cat=main_cat, sub_cat=sub_cat)
 
-    def showItem(self, main_cat=-1, sub_cat=-1, item=-1):
-        if main_cat < 0 or sub_cat < 0:
-            return
-        self.sub_category_list_widget.setCurrentRow(sub_cat)
+    def showItemList(self):
         self.item_list_widget.clear()
+        main_cat = self.main_category_list_widget.currentRow()
+        sub_cat = self.sub_category_list_widget.currentRow()
         for it in self.category_data[main_cat]['sub_category_list'][sub_cat]['item_list']:
             list_item = QListWidgetItem(it['name'])
             self.item_list_widget.addItem(list_item)
-            if item >= 0:
-                self.item_list_widget.setCurrentRow(item)

@@ -49,15 +49,14 @@ class MainCategoryListWidget(QWidget):
         self.list_view = _ListWidget()
         root_layout.addWidget(self.list_view)
 
+        self.itemClicked = self.list_view.itemClicked
+        self.setCurrentRow = self.list_view.setCurrentRow
+        self.currentRow = self.list_view.currentRow
+        self.clear = self.list_view.clear
+
     def addItem(self, item: MainCategory):
         item_widget = QListWidgetItem(self.list_view)
         self.list_view.addItem(item_widget)
         custom_item_widget = MainCategoryItemWidget(item)
         item_widget.setSizeHint(custom_item_widget.sizeHint())
         self.list_view.setItemWidget(item_widget, custom_item_widget)
-
-    def setCurrentRow(self, row: int):
-        self.list_view.setCurrentRow(row)
-
-    def clear(self):
-        self.list_view.clear()

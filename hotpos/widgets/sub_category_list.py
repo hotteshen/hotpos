@@ -23,12 +23,11 @@ class SubCategoryListWidget(QWidget):
         self.list_view.setFlow(QListWidget.LeftToRight)
         root_layout.addWidget(self.list_view)
 
+        self.itemClicked = self.list_view.itemClicked
+        self.setCurrentRow = self.list_view.setCurrentRow
+        self.currentRow = self.list_view.currentRow
+        self.clear = self.list_view.clear
+
     def addItem(self, name: str):
         item_widget = QListWidgetItem(name)
         self.list_view.addItem(item_widget)
-
-    def setCurrentRow(self, row: int):
-        self.list_view.setCurrentRow(row)
-
-    def clear(self):
-        self.list_view.clear()
