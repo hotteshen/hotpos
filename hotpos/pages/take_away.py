@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget, QLabel, QListWidget, QListWidg
 from ..widgets.group_box import GroupBoxWidget
 from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
 from ..widgets.sub_category_list import SubCategoryListWidget
-from ..widgets.item_list import ItemListWidget, Item
+from ..widgets.cookie_item_list import CookieItemListWidget, CookieItem
 
 
 class TakeAwayPage(QWidget):
@@ -24,11 +24,11 @@ class TakeAwayPage(QWidget):
         gb_root = gb.getRootLayout()
 
         self.sub_category_list_widget = SubCategoryListWidget()
-        self.sub_category_list_widget.itemClicked.connect(self.showItemList)
+        self.sub_category_list_widget.itemClicked.connect(self.showCookieItemList)
         gb_root.addWidget(self.sub_category_list_widget, 0)
 
-        self.item_list_widget = ItemListWidget()
-        gb_root.addWidget(self.item_list_widget, 1)
+        self.cookie_item_list_widget = CookieItemListWidget()
+        gb_root.addWidget(self.cookie_item_list_widget, 1)
 
         gb = GroupBoxWidget(title='Order ID: #18')
         root_layout.addWidget(gb, 1)
@@ -73,24 +73,24 @@ class TakeAwayPage(QWidget):
         self.showMainCategoryList()
 
     def showMainCategoryList(self):
-        self.item_list_widget.clear()
+        self.cookie_item_list_widget.clear()
         self.sub_category_list_widget.clear()
         self.main_category_list_widget.clear()
         for cat in self.category_data:
             cat_obj = MainCategory(cat['name'], cat['image'])
-            self.main_category_list_widget.addItem(cat_obj)
+            self.main_category_list_widget.addMainCategory(cat_obj)
 
     def showSubCategoryList(self):
-        self.item_list_widget.clear()
+        self.cookie_item_list_widget.clear()
         self.sub_category_list_widget.clear()
         main_cat = self.main_category_list_widget.currentRow()
         for cat in self.category_data[main_cat]['sub_category_list']:
-            self.sub_category_list_widget.addItem(cat['name'])
+            self.sub_category_list_widget.addSubCategory(cat['name'])
 
-    def showItemList(self):
-        self.item_list_widget.clear()
+    def showCookieItemList(self):
+        self.cookie_item_list_widget.clear()
         main_cat = self.main_category_list_widget.currentRow()
         sub_cat = self.sub_category_list_widget.currentRow()
         for it in self.category_data[main_cat]['sub_category_list'][sub_cat]['item_list']:
-            item = Item(it['name'], it['image'])
-            self.item_list_widget.addItem(item)
+            cookie_obj = CookieItem(it['name'], it['image'])
+            self.cookie_item_list_widget.addCookieItem(cookie_obj)

@@ -6,7 +6,7 @@ from ..config import RES_PATH, ITEM_ICON_SIZE, MAIN_CAT_LIST_WIDTH
 from .label import LabelWidget
 
 
-class Item:
+class CookieItem:
 
     def __init__(self, name: str, image: str):
         self.name = name
@@ -15,7 +15,7 @@ class Item:
 
 class ItemWidget(QWidget):
 
-    def __init__(self, item: Item, parent=None):
+    def __init__(self, item: CookieItem, parent=None):
         super(ItemWidget, self).__init__(parent)
 
         root_layout = QVBoxLayout(self)
@@ -32,7 +32,7 @@ class ItemWidget(QWidget):
         root_layout.addWidget(name)
 
 
-class _ListWidget(QListWidget):
+class CookieItemListWidget(QListWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -44,28 +44,13 @@ class _ListWidget(QListWidget):
 
     def sizeHint(self):
         size = QSize()
-        size.setHeight(super(_ListWidget, self).sizeHint().height())
+        size.setHeight(super(CookieItemListWidget, self).sizeHint().height())
         size.setWidth(MAIN_CAT_LIST_WIDTH)
         return size
 
-
-class ItemListWidget(QWidget):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        root_layout = QVBoxLayout(self)
-        self.list_view = _ListWidget()
-        root_layout.addWidget(self.list_view)
-
-        self.itemClicked = self.list_view.itemClicked
-        self.setCurrentRow = self.list_view.setCurrentRow
-        self.currentRow = self.list_view.currentRow
-        self.clear = self.list_view.clear
-
-    def addItem(self, item: Item):
-        item_widget = QListWidgetItem(self.list_view)
-        self.list_view.addItem(item_widget)
+    def addCookieItem(self, item: CookieItem):
+        item_widget = QListWidgetItem(self)
+        self.addItem(item_widget)
         custom_item_widget = ItemWidget(item)
         item_widget.setSizeHint(custom_item_widget.sizeHint())
-        self.list_view.setItemWidget(item_widget, custom_item_widget)
+        self.setItemWidget(item_widget, custom_item_widget)

@@ -31,32 +31,17 @@ class MainCategoryItemWidget(QWidget):
         root_layout.addWidget(name)
 
 
-class _ListWidget(QListWidget):
+class MainCategoryListWidget(QListWidget):
 
     def sizeHint(self):
         size = QSize()
-        size.setHeight(super(_ListWidget, self).sizeHint().height())
+        size.setHeight(super(MainCategoryListWidget, self).sizeHint().height())
         size.setWidth(MAIN_CAT_LIST_WIDTH)
         return size
 
-
-class MainCategoryListWidget(QWidget):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        root_layout = QVBoxLayout(self)
-        self.list_view = _ListWidget()
-        root_layout.addWidget(self.list_view)
-
-        self.itemClicked = self.list_view.itemClicked
-        self.setCurrentRow = self.list_view.setCurrentRow
-        self.currentRow = self.list_view.currentRow
-        self.clear = self.list_view.clear
-
-    def addItem(self, item: MainCategory):
-        item_widget = QListWidgetItem(self.list_view)
-        self.list_view.addItem(item_widget)
+    def addMainCategory(self, item: MainCategory):
+        item_widget = QListWidgetItem(self)
+        self.addItem(item_widget)
         custom_item_widget = MainCategoryItemWidget(item)
         item_widget.setSizeHint(custom_item_widget.sizeHint())
-        self.list_view.setItemWidget(item_widget, custom_item_widget)
+        self.setItemWidget(item_widget, custom_item_widget)
