@@ -33,11 +33,11 @@ class MainCategoryItemWidget(QWidget):
 
 class _ListWidget(QListWidget):
 
-  def sizeHint(self):
-    s = QSize()
-    s.setHeight(super(_ListWidget, self).sizeHint().height())
-    s.setWidth(MAIN_CAT_LIST_WIDTH)
-    return s
+    def sizeHint(self):
+        size = QSize()
+        size.setHeight(super(_ListWidget, self).sizeHint().height())
+        size.setWidth(MAIN_CAT_LIST_WIDTH)
+        return size
 
 
 class MainCategoryListWidget(QWidget):
