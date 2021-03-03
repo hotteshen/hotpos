@@ -32,18 +32,20 @@ class MainWindow(QWidget):
         self.take_away_page = TakeAwayPage()
         root_layout.addWidget(self.take_away_page, 1)
 
-        self.showPage('login')
+        self.showPage('take_away')
 
-    def showPage(self, page: str):
+    def showPage(self, page_name: str):
         self.navigation.hide()
         self.login_page.hide()
         self.home_page.hide()
         self.take_away_page.hide()
-        if page == 'login':
+        if page_name == 'login':
             self.login_page.show()
-        elif page == 'home':
+        elif page_name == 'home':
             self.navigation.show()
+            self.navigation.setCurrentTab(page_name)
             self.home_page.show()
-        elif page == 'take_away':
+        elif page_name == 'take_away':
             self.navigation.show()
+            self.navigation.setCurrentTab(page_name)
             self.take_away_page.show()
