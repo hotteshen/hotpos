@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy
 
 from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
+from ..dialogs.add_modifiers import AddModifiersDialog
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
@@ -46,14 +47,24 @@ class OrderedCookieWidget(QWidget):
 
         button = QPushButton("+M")
         button.setFixedWidth(SIZE_B)
+        button.clicked.connect(self.openAddModifiersDialog)
         body.addWidget(button)
+
         button = QPushButton("+P")
         button.setEnabled(False)
         button.setFixedWidth(SIZE_B)
         body.addWidget(button)
+
         button = QPushButton("Edit")
         button.setFixedWidth(SIZE_B)
         body.addWidget(button)
+
+    def openAddModifiersDialog(self):
+        add_modifiers_dialog = AddModifiersDialog()
+        if add_modifiers_dialog.exec_():
+            print("Ok")
+        else:
+            print("Cancel")
 
 
 class OrderWidget(GroupBoxWidget):
