@@ -30,11 +30,11 @@ class TakeAwayPage(QWidget):
         gb_root.addWidget(self.sub_category_list_widget, 0)
 
         self.cookie_item_list_widget = CookieItemListWidget()
+        self.cookie_item_list_widget.itemClicked.connect(self.addCookie)
         gb_root.addWidget(self.cookie_item_list_widget, 1)
 
-        gb = OrderWidget()
-        root_layout.addWidget(gb, 1)
-        gb_root = gb.getRootLayout()
+        self.order_widget = OrderWidget()
+        root_layout.addWidget(self.order_widget, 1)
 
         self.category_data = self.app.backend().getCategoryData()
         self.showMainCategoryList()
@@ -67,3 +67,9 @@ class TakeAwayPage(QWidget):
         for it in self.category_data[main_cat]['sub_category_list'][sub_cat]['item_list']:
             cookie_obj = CookieItem(it['name'], it['image'])
             self.cookie_item_list_widget.addCookieItem(cookie_obj)
+
+    def addCookie(self):
+        main_cat = self.main_category_list_widget.currentRow()
+        sub_cat = self.sub_category_list_widget.currentRow()
+        cookie_item = self.cookie_item_list_widget.currentRow()
+        self.order_widget.addCookieItem(main_cat, sub_cat, cookie_item)
