@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
 
 from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
 from ..dialogs.add_modifiers import AddModifiersDialog
@@ -9,7 +9,7 @@ from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
 
 
-class OrderedCookieWidget(QWidget):
+class OrderedCookieWidget(QGroupBox):
 
     def __init__(self, cookie, parent=None):
         super().__init__(parent=parent)
