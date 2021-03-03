@@ -5,6 +5,7 @@ from ..widgets.group_box import GroupBoxWidget
 from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
 from ..widgets.sub_category_list import SubCategoryListWidget
 from ..widgets.cookie_item_list import CookieItemListWidget, CookieItem
+from ..widgets.order import OrderWidget
 
 
 class TakeAwayPage(QWidget):
@@ -30,7 +31,7 @@ class TakeAwayPage(QWidget):
         self.cookie_item_list_widget = CookieItemListWidget()
         gb_root.addWidget(self.cookie_item_list_widget, 1)
 
-        gb = GroupBoxWidget(title='Order ID: #18')
+        gb = OrderWidget(title='Order ID: #1')
         root_layout.addWidget(gb, 1)
         gb_root = gb.getRootLayout()
 

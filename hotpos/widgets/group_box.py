@@ -8,9 +8,9 @@ class GroupBoxWidget(QGroupBox):
         layout = QVBoxLayout()
         self.setLayout(layout)
         if title:
-            titleLabel = QLabel(title)
-            titleLabel.setStyleSheet('margin-bottom: 0;')
-            layout.addWidget(titleLabel, 0)
+            self.title_label = QLabel(title)
+            self.title_label.setStyleSheet('margin-bottom: 0;')
+            layout.addWidget(self.title_label, 0)
         self.root = QVBoxLayout()
         layout.addLayout(self.root, 1)
         self.setStyleSheet('padding: 0')
