@@ -95,8 +95,6 @@ class OrderWidget(GroupBoxWidget):
         self.cookie_list_layout.addStretch()
 
         scroll = QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setWidgetResizable(True)
         scroll.setWidget(cookie_list)
         root_layout.addWidget(scroll)

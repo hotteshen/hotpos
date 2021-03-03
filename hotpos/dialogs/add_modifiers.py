@@ -1,6 +1,7 @@
 from functools import partial
 
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit, QScrollArea
 
 from ..config import SIZE_C
 from ..widgets.label import LabelWidget
@@ -38,13 +39,21 @@ class AddModifiersDialog(QDialog):
         layout.addStretch()
 
         gb = QGroupBox("Modifiers")
+        gb.setMaximumHeight(SIZE_C * 2)
         root_layout.addWidget(gb)
-        layout = QVBoxLayout()
-        gb.setLayout(layout)
+        gb_root = QVBoxLayout(gb)
+        modifier_checklist_widget = QWidget()
+        modifier_checklist_layout = QVBoxLayout(modifier_checklist_widget)
+        modifier_checklist_layout.addStretch()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(modifier_checklist_widget)
+        gb_root.addWidget(scroll)
+
         modifier_list = self.cookie['modifier_list']
         for modifier in modifier_list:
             checkbox = QCheckBox(modifier)
-            layout.addWidget(checkbox)
+            modifier_checklist_layout.addWidget(checkbox)
 
         gb = QGroupBox("")
         gb.setMinimumHeight(SIZE_C)
