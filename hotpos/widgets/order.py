@@ -2,8 +2,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy
 
-from ..config import RES_PATH, SIZE_A
+from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
 from .group_box import GroupBoxWidget
+from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
 
 
@@ -28,7 +29,31 @@ class OrderedCookieWidget(QWidget):
         delete_button.setFixedWidth(SIZE_A)
         delete_button.setIcon(QIcon(str(RES_PATH / 'icon-delete.png')))
         delete_button.clicked.connect(lambda: self.setParent(None))
+        delete_button.setFixedWidth(SIZE_B)
         header.addWidget(delete_button, 0)
+
+        body = QHBoxLayout()
+        root_layout.addLayout(body)
+
+        quantity_spinbox = HorizontalSpinBox()
+        quantity_spinbox.setStyleSheet('QSpinBox::up-button  { subcontrol-position: center right; } QSpinBox::down-button  { subcontrol-position: center left; }')
+        quantity_spinbox.setAlignment(Qt.AlignCenter)
+        quantity_spinbox.setFixedWidth(SIZE_C)
+        body.addWidget(quantity_spinbox)
+
+        price_label = LabelWidget("0").setCenter()
+        body.addWidget(price_label)
+
+        button = QPushButton("+M")
+        button.setFixedWidth(SIZE_B)
+        body.addWidget(button)
+        button = QPushButton("+P")
+        button.setEnabled(False)
+        button.setFixedWidth(SIZE_B)
+        body.addWidget(button)
+        button = QPushButton("Edit")
+        button.setFixedWidth(SIZE_B)
+        body.addWidget(button)
 
 
 class OrderWidget(GroupBoxWidget):
@@ -87,8 +112,7 @@ class OrderWidget(GroupBoxWidget):
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Discount'), 1)
         button = QPushButton("")
-        button.setFixedHeight(SIZE_A)
-        button.setFixedWidth(SIZE_A)
+        button.setFixedWidth(SIZE_B)
         button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))
         layout.addWidget(button, 0)
 
@@ -97,8 +121,7 @@ class OrderWidget(GroupBoxWidget):
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Tax'), 1)
         button = QPushButton("")
-        button.setFixedHeight(SIZE_A)
-        button.setFixedWidth(SIZE_A)
+        button.setFixedWidth(SIZE_B)
         button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))
         layout.addWidget(button, 0)
 
