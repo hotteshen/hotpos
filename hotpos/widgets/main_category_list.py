@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QListWidget, QListWidgetItem, QLabel, QSizePolicy
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QListWidget, QListWidgetItem, QLabel, QSizePolicy
 
 from ..config import RES_PATH, MAIN_CAT_ICON_SIZE, MAIN_CAT_LIST_WIDTH
 from .label import LabelWidget

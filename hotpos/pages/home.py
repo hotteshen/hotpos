@@ -1,6 +1,4 @@
-from hotpos.widgets.table import OrdersTableWidget
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton
 
 from ..widgets.group_box import GroupBoxWidget
 from ..widgets.label import LabelWidget
@@ -11,6 +9,7 @@ class HomePage(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.app = QApplication.instance()
 
         root_layout = QHBoxLayout()
         self.setLayout(root_layout)
@@ -25,11 +24,7 @@ class HomePage(QWidget):
         gb_root = gb.getRootLayout()
         gb_root.addWidget(LabelWidget('Late orders').setSize(20))
         late_orders_table = OrdersTableWidget()
-        late_orders_table.setData([
-            ['001212', '15900', '2020-04-16'],
-            ['001211', '23700', '2020-04-16'],
-            ['001210', '26200', '2020-04-16'],
-        ])
+        late_orders_table.setData(self.app.backend().getLateOrderList())
         gb_root.addWidget(late_orders_table)
 
         gb = GroupBoxWidget()
@@ -37,11 +32,7 @@ class HomePage(QWidget):
         gb_root = gb.getRootLayout()
         gb_root.addWidget(LabelWidget('Upcoming orders').setSize(20))
         upcoming_orders_table = OrdersTableWidget()
-        upcoming_orders_table.setData([
-            ['001212', '15900', '2020-04-16'],
-            ['001211', '23700', '2020-04-16'],
-            ['001210', '26200', '2020-04-16'],
-        ])
+        upcoming_orders_table.setData(self.app.backend().getUpcomingOrderList())
         gb_root.addWidget(upcoming_orders_table)
 
         def increaseHeight(btn: QPushButton) -> QPushButton:

@@ -1,6 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, QTime, QDate
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from .label import LabelWidget
 

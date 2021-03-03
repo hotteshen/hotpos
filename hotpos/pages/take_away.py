@@ -1,5 +1,4 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QHBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QWidget
 
 from ..widgets.group_box import GroupBoxWidget
 from ..widgets.main_category_list import MainCategoryListWidget, MainCategory
@@ -12,6 +11,8 @@ class TakeAwayPage(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.app = QApplication.instance()
 
         root_layout = QHBoxLayout()
         self.setLayout(root_layout)
@@ -35,59 +36,7 @@ class TakeAwayPage(QWidget):
         root_layout.addWidget(gb, 1)
         gb_root = gb.getRootLayout()
 
-        self.category_data = [
-            {
-                'name': 'Food',
-                'image': 'main-category-food.png',
-                'sub_category_list': [
-                    {
-                        'name': 'All',
-                        'image': None,
-                        'item_list': [
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
-                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg'},
-                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
-                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
-                        ],
-                    },
-                    {
-                        'name': 'In Stock',
-                        'image': None,
-                        'item_list': [
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
-                        ],
-                    },
-                ],
-            },
-            {
-                'name': 'Fast Foods',
-                'image': 'main-category-fast-food.png',
-                'sub_category_list': [
-                    {
-                        'name': 'All',
-                        'image': None,
-                        'item_list': [
-                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
-                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
-                        ],
-                    },
-                ]
-            },
-            {
-                'name': 'Fast Foods',
-                'image': 'main-category-drink.png',
-                'sub_category_list': [
-                    {
-                        'name': 'All',
-                        'image': None,
-                        'item_list': [
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
-                        ],
-                    },
-                ]
-            },
-        ]
+        self.category_data = self.app.backend().getCategoryData()
         self.showMainCategoryList()
 
     def showMainCategoryList(self):
