@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit, QScrollArea, QSizePolicy
 
-from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
+from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C, DIALOG_MIN_SIZE_A
 from ..widgets.label import LabelWidget
 
 
@@ -14,6 +14,7 @@ class ModifierItemWidget(QWidget):
         super().__init__(parent=parent)
 
         root_layout = QVBoxLayout(self)
+        self.setFixedWidth(SIZE_C * 2)
         self.setSizePolicy(QSizePolicy.Minimum,QSizePolicy.Minimum)
 
         header = QHBoxLayout()
@@ -34,6 +35,8 @@ class ModifierItemWidget(QWidget):
         root_layout.addLayout(body)
         for modifier in modifier_list:
             body.addWidget(LabelWidget(str(modifier)))
+        
+        root_layout.addStretch()
 
 
 class AddModifiersDialog(QDialog):
@@ -43,6 +46,7 @@ class AddModifiersDialog(QDialog):
 
         self.cookie = cookie
 
+        self.setMinimumSize(*DIALOG_MIN_SIZE_A)
         self.setWindowTitle("Add Modifiers")
 
         root_layout = QVBoxLayout(self)
@@ -87,10 +91,13 @@ class AddModifiersDialog(QDialog):
             modifier_checklist_layout.addWidget(checkbox)
             self.modifier_checkbox_list.append(checkbox)
 
-        gb = QGroupBox("")
-        gb.setMinimumHeight(SIZE_C)
-        gb.setMaximumHeight(SIZE_C * 2)
-        root_layout.addWidget(gb)
+        widget = QWidget()
+        self.modifier_item_list_container = QHBoxLayout(widget)
+        self.modifier_item_list_container.addStretch()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(widget)
+        root_layout.addWidget(scroll)
 
         gb = QGroupBox("Kitchen Note")
         root_layout.addWidget(gb)
@@ -105,7 +112,21 @@ class AddModifiersDialog(QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.apply_button = buttonbox.button(QDialogButtonBox.Apply)
+        self.apply_button.clicked.connect(self.onApplyClick)
 
+        self.checkApplicable()
+
+    def onApplyClick(self):
+        modifier_list = []
+        for i in range(len(self.cookie['modifier_list'])):
+            if self.modifier_checkbox_list[i].isChecked():
+                modifier_list.append(self.cookie['modifier_list'][i])
+        print(modifier_list)
+        modifier_item_widget = ModifierItemWidget(self.quantity, modifier_list=modifier_list)
+        self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
+        self.quantity = 0
+        for checkbox in self.modifier_checkbox_list:
+            checkbox.setChecked(False)
         self.checkApplicable()
 
     def onQuantityNumpadClick(self, v):
