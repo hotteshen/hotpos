@@ -8,8 +8,10 @@ from ..widgets.label import LabelWidget
 
 class AddModifiersDialog(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, cookie, parent=None):
         super().__init__(parent=parent)
+
+        self.cookie = cookie
 
         self.setWindowTitle("Add Modifiers")
 
@@ -39,7 +41,7 @@ class AddModifiersDialog(QDialog):
         root_layout.addWidget(gb)
         layout = QVBoxLayout()
         gb.setLayout(layout)
-        modifier_list = ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard']
+        modifier_list = self.cookie['modifier_list']
         for modifier in modifier_list:
             checkbox = QCheckBox(modifier)
             layout.addWidget(checkbox)

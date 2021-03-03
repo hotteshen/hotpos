@@ -27,18 +27,18 @@ class BackendFacade():
                         'name': 'All',
                         'image': None,
                         'item_list': [
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
-                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg'},
-                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
-                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
+                            {'name': 'Wine', 'image': 'item-wine.jpg', 'modifier_list': []},
+                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg', 'modifier_list': ['BBQ', 'Buffalo',]},
+                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg', 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg', 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
+                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'modifier_list': []},
                         ],
                     },
                     {
                         'name': 'In Stock',
                         'image': None,
                         'item_list': [
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg', 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
                         ],
                     },
                 ],
@@ -52,20 +52,20 @@ class BackendFacade():
                         'image': None,
                         'item_list': [
                             {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
-                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
+                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'modifier_list': []},
                         ],
                     },
                 ]
             },
             {
-                'name': 'Fast Foods',
+                'name': 'Drink',
                 'image': 'main-category-drink.png',
                 'sub_category_list': [
                     {
                         'name': 'All',
                         'image': None,
                         'item_list': [
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
+                            {'name': 'Wine', 'image': 'item-wine.jpg', 'modifier_list': []},
                         ],
                     },
                 ]
