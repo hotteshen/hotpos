@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit
 
 from ..config import SIZE_C
@@ -18,13 +20,18 @@ class AddModifiersDialog(QDialog):
         button_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'CE']
         for v in button_values:
             button = QPushButton(str(v))
+            button.clicked.connect(partial(self.onQuantityNumpadClick, v))
             layout.addWidget(button)
+            if v == 'CE':
+                button.setProperty('class', 'danger')
+
+        self.quantity = 0
 
         gb = QGroupBox("Quantity")
         root_layout.addWidget(gb)
         layout = QHBoxLayout()
         gb.setLayout(layout)
-        self.quantity_label = LabelWidget("0")
+        self.quantity_label = LabelWidget(str(self.quantity))
         layout.addWidget(self.quantity_label)
         layout.addStretch()
 
@@ -52,3 +59,14 @@ class AddModifiersDialog(QDialog):
         QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel | QDialogButtonBox.Apply
         buttonBox = QDialogButtonBox(QBtn)
         root_layout.addWidget(buttonBox)
+
+    def onQuantityNumpadClick(self, v):
+        if v == 'CE':
+            self.quantity = 0
+        elif len(str(self.quantity)) >= 2:
+            pass
+        elif v == 0 and self.quantity == 0:
+            pass
+        else:
+            self.quantity = int(str(self.quantity) + str(v))
+        self.quantity_label.setText(str(self.quantity))
