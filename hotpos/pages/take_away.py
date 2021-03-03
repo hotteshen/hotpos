@@ -48,26 +48,43 @@ class TakeAwayPage(QWidget):
                             {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
                             {'name': 'Chicken', 'image': 'item-chicken.jpg'},
                             {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
-                            {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg'},
-                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
-                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
                         ],
                     },
                     {
                         'name': 'In Stock',
                         'image': None,
                         'item_list': [
-                            {'name': 'Wine', 'image': 'item-wine.jpg'},
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg'},
                         ],
                     },
                 ],
             },
             {
-                'name': 'Drinks',
+                'name': 'Fast Foods',
+                'image': 'main-category-fast-food.png',
+                'sub_category_list': [
+                    {
+                        'name': 'All',
+                        'image': None,
+                        'item_list': [
+                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
+                            {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg'},
+                        ],
+                    },
+                ]
+            },
+            {
+                'name': 'Fast Foods',
                 'image': 'main-category-drink.png',
-                'sub_category_list': [],
+                'sub_category_list': [
+                    {
+                        'name': 'All',
+                        'image': None,
+                        'item_list': [
+                            {'name': 'Wine', 'image': 'item-wine.jpg'},
+                        ],
+                    },
+                ]
             },
         ]
         self.showMainCategoryList()
@@ -79,6 +96,9 @@ class TakeAwayPage(QWidget):
         for cat in self.category_data:
             cat_obj = MainCategory(cat['name'], cat['image'])
             self.main_category_list_widget.addMainCategory(cat_obj)
+        if len(self.category_data) > 0:
+            self.main_category_list_widget.setCurrentRow(0)
+            self.showSubCategoryList()
 
     def showSubCategoryList(self):
         self.cookie_item_list_widget.clear()
@@ -86,6 +106,9 @@ class TakeAwayPage(QWidget):
         main_cat = self.main_category_list_widget.currentRow()
         for cat in self.category_data[main_cat]['sub_category_list']:
             self.sub_category_list_widget.addSubCategory(cat['name'])
+        if len(self.category_data[0]['sub_category_list']) > 0:
+            self.sub_category_list_widget.setCurrentRow(0)
+            self.showCookieItemList()
 
     def showCookieItemList(self):
         self.cookie_item_list_widget.clear()
