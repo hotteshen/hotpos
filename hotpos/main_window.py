@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from .pages.login import LoginPage
 from .pages.home import HomePage
+from .pages.table import TablePage
 from .pages.take_away import TakeAwayPage
 from .widgets.navigation import NavigationWidget
 from .config import WINDOW_MIN_SIZE, APP_NAME, RES_PATH
@@ -25,12 +26,17 @@ class MainWindow(QWidget):
         self.navigation = NavigationWidget()
         root_layout.addWidget(self.navigation, 0)
 
+        body = QVBoxLayout()
+        root_layout.addLayout(body, 1)
+
         self.login_page = LoginPage()
-        root_layout.addWidget(self.login_page, 1)
+        body.addWidget(self.login_page)
         self.home_page = HomePage()
-        root_layout.addWidget(self.home_page, 1)
+        body.addWidget(self.home_page)
         self.take_away_page = TakeAwayPage()
-        root_layout.addWidget(self.take_away_page, 1)
+        body.addWidget(self.take_away_page)
+        self.table_page = TablePage()
+        body.addWidget(self.table_page)
 
         self.showPage('home')
 
@@ -39,6 +45,7 @@ class MainWindow(QWidget):
         self.login_page.hide()
         self.home_page.hide()
         self.take_away_page.hide()
+        self.table_page.hide()
         if page_name == 'login':
             self.login_page.show()
         elif page_name == 'home':
@@ -49,3 +56,7 @@ class MainWindow(QWidget):
             self.navigation.show()
             self.navigation.setCurrentTab(page_name)
             self.take_away_page.show()
+        elif page_name == 'table':
+            self.navigation.show()
+            self.navigation.setCurrentTab(page_name)
+            self.table_page.show()

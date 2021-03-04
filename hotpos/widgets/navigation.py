@@ -29,9 +29,10 @@ class NavigationWidget(QWidget):
         _styleButton(button)
         self.root_layout.addWidget(button)
 
-        button = QPushButton("Table")
-        _styleButton(button)
-        self.root_layout.addWidget(button)
+        self.table_button = QPushButton("Table")
+        self.table_button.clicked.connect(self.showTablePage)
+        _styleButton(self.table_button)
+        self.root_layout.addWidget(self.table_button)
 
         button = QPushButton("Reservation")
         _styleButton(button)
@@ -119,16 +120,19 @@ class NavigationWidget(QWidget):
     def showTakeAwayPage(self):
         self.app.main_window.showPage('take_away')
 
+    def showTablePage(self):
+        self.app.main_window.showPage('table')
+
     def setCurrentTab(self, page_name: str):
+        self.home_button.setDown(False)
+        self.take_away_button.setDown(False)
+        self.table_button.setDown(False)
         if page_name == 'home':
-            self.take_away_button.setDown(False)
             self.home_button.setDown(True)
         elif page_name == 'take_away':
-            self.home_button.setDown(False)
             self.take_away_button.setDown(True)
-        else:
-            self.home_button.setDown(False)
-            self.take_away_button.setDown(False)
+        elif page_name == 'table':
+            self.table_button.setDown(True)
 
 def _styleButton(btn: QPushButton) -> QPushButton:
     btn.setStyleSheet('height: 64px; margin-bottom: 16px;')

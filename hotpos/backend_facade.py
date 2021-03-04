@@ -71,3 +71,15 @@ class BackendFacade():
                 ]
             },
         ]
+
+    def getTableData(self):
+        return [
+            {
+                'name': '1st floor',
+                'table_list': [],
+            },
+            {
+                'name': '2nd floor',
+                'table_list': [],
+            },
+        ]
