@@ -34,13 +34,13 @@ class BackendFacade():
                             {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'price': 1500.0, 'modifier_list': []},
                         ],
                     },
-                    # {
-                    #     'name': 'In Stock',
-                    #     'image': None,
-                    #     'item_list': [
-                    #         {'name': 'Chicken', 'image': 'item-chicken.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
-                    #     ],
-                    # },
+                    {
+                        'name': 'In Stock',
+                        'image': None,
+                        'item_list': [
+                            {'name': 'Chicken', 'image': 'item-chicken.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
+                        ],
+                    },
                 ],
             },
             {

@@ -13,37 +13,35 @@ class NavigationWidget(QWidget):
         self.root_layout = QHBoxLayout()
         self.setLayout(self.root_layout)
 
-        def increaseHeight(btn: QPushButton) -> QPushButton:
-            btn.setStyleSheet('height: 64px; margin-bottom: 16px;')
-
         self.addMenu()
 
         self.home_button = QPushButton("Home")
         self.home_button.clicked.connect(self.showHomePage)
-        increaseHeight(self.home_button)
+        _styleButton(self.home_button)
         self.root_layout.addWidget(self.home_button)
 
         self.take_away_button = QPushButton("Take away")
         self.take_away_button.clicked.connect(self.showTakeAwayPage)
-        increaseHeight(self.take_away_button)
+        _styleButton(self.take_away_button)
         self.root_layout.addWidget(self.take_away_button)
 
         button = QPushButton("Delivery")
-        increaseHeight(button)
+        _styleButton(button)
         self.root_layout.addWidget(button)
 
         button = QPushButton("Table")
-        increaseHeight(button)
+        _styleButton(button)
         self.root_layout.addWidget(button)
 
         button = QPushButton("Reservation")
-        increaseHeight(button)
+        _styleButton(button)
         self.root_layout.addWidget(button)
 
     def addMenu(self):
         menu = QMenu(self)
         button = QPushButton()
         button.setIcon(QIcon(str(RES_PATH / 'icon-menu.png')))
+        _styleButton(button)
         button.setFixedWidth(SIZE_B)
         button.setMenu(menu)
         self.root_layout.addWidget(button)
@@ -131,3 +129,6 @@ class NavigationWidget(QWidget):
         else:
             self.home_button.setDown(False)
             self.take_away_button.setDown(False)
+
+def _styleButton(btn: QPushButton) -> QPushButton:
+    btn.setStyleSheet('height: 64px; margin-bottom: 16px;')
