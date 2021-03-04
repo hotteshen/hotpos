@@ -38,7 +38,7 @@ class MainWindow(QWidget):
         self.table_page = TablePage()
         body.addWidget(self.table_page)
 
-        self.showPage('home')
+        self.showPage('login')
 
     def showPage(self, page_name: str):
         self.navigation.hide()

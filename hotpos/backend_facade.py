@@ -1,7 +1,32 @@
 from datetime import date as Date
+import requests
+
+from PyQt5.QtCore import QSettings
+
+from .config import API_URL, SETTING_NAME, SETTING_VERSION
+
+
+KEY_API_TOKEN = 'token'
 
 
 class BackendFacade():
+
+    def __init__(self) -> None:
+        # self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
+        self.access_token = ''
+
+    def checkToken(self) -> bool:
+        if self.settings.getValue(KEY_API_TOKEN) is None:
+            return False
+
+    def login(self, code: str) -> bool:
+        url = API_URL + '/login'
+        payload={'pincode': code}
+        response = requests.request("POST", url, data=payload)
+        if response.status_code != 200:
+            return False
+        self.access_token = response.json()['access_token']
+        return True
 
     def getLateOrderList(self):
         return [

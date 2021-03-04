@@ -4,6 +4,10 @@ from pathlib import Path
 APP_NAME = 'HotPOS'
 VERSION = 1
 
+SETTING_NAME = APP_NAME
+SETTING_VERSION = 'qt-v1'
+API_URL = 'http://209.50.49.87/api/v1'
+
 ROOT_PATH = Path(__file__).parent.parent
 RES_PATH = ROOT_PATH / 'res'
 

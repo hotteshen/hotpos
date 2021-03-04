@@ -66,9 +66,13 @@ class LoginPage(QWidget):
         elif code == 'DEL':
             for code_input in self.code_inputs:
                 code_input.setText('')
-                self.code = ''
+            self.code = ''
         elif code == 'OK':
             if len(self.code) == 4:
-                print(self.code)
-                self.app.main_window.showPage('home')
-
+                result = self.app.backend().login(self.code)
+                if result:
+                    self.app.main_window.showPage('home')
+                else:
+                    for code_input in self.code_inputs:
+                        code_input.setText('')
+                    self.code = ''
