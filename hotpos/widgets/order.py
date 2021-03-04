@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPu
 
 from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
 from ..dialogs.add_modifiers import AddModifiersDialog
+from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
@@ -60,11 +61,19 @@ class OrderedCookieWidget(QGroupBox):
 
         button = QPushButton("Edit")
         button.setFixedWidth(SIZE_B)
+        button.clicked.connect(self.openEditPriceDialog)
         body.addWidget(button)
 
     def openAddModifiersDialog(self):
-        add_modifiers_dialog = AddModifiersDialog(self.cookie)
-        if add_modifiers_dialog.exec_():
+        dialog = AddModifiersDialog(self.cookie)
+        if dialog.exec_():
+            print("Ok")
+        else:
+            print("Cancel")
+
+    def openEditPriceDialog(self):
+        dialog = EditPriceDialog(self.cookie)
+        if dialog.exec_():
             print("Ok")
         else:
             print("Cancel")
