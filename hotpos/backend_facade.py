@@ -34,13 +34,13 @@ class BackendFacade():
                             {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'modifier_list': []},
                         ],
                     },
-                    {
-                        'name': 'In Stock',
-                        'image': None,
-                        'item_list': [
-                            {'name': 'Chicken', 'image': 'item-chicken.jpg', 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
-                        ],
-                    },
+                    # {
+                    #     'name': 'In Stock',
+                    #     'image': None,
+                    #     'item_list': [
+                    #         {'name': 'Chicken', 'image': 'item-chicken.jpg', 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
+                    #     ],
+                    # },
                 ],
             },
             {
@@ -51,7 +51,7 @@ class BackendFacade():
                         'name': 'All',
                         'image': None,
                         'item_list': [
-                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg'},
+                            {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg', 'modifier_list': []},
                             {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'modifier_list': []},
                         ],
                     },

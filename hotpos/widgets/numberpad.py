@@ -1,0 +1,3 @@
+class NumberPadWidget(QWidget):
+
+    pass

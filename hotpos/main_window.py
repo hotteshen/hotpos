@@ -32,7 +32,7 @@ class MainWindow(QWidget):
         self.take_away_page = TakeAwayPage()
         root_layout.addWidget(self.take_away_page, 1)
 
-        self.showPage('take_away')
+        self.showPage('home')
 
     def showPage(self, page_name: str):
         self.navigation.hide()
