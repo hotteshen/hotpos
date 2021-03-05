@@ -8,12 +8,13 @@ from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C, DIALOG_MIN_SIZE_A
 from ..widgets.label import LabelWidget
 
 
-class ModifierItemWidget(QGroupBox):
+class ModifierCollectionWidget(QGroupBox):
 
-    def __init__(self, modifier_collection: dict, on_delete: Callable, parent: QWidget = None):
+    def __init__(self, modifier_collection: dict, modifier_collection_list: list, parent: QWidget = None):
         super().__init__(parent=parent)
 
-        self.on_delete = on_delete
+        self.modifier_collection = modifier_collection
+        self.modifier_collection_list = modifier_collection_list
 
         root_layout = QVBoxLayout(self)
         self.setFixedWidth(SIZE_C * 2)
@@ -22,7 +23,7 @@ class ModifierItemWidget(QGroupBox):
         header = QHBoxLayout()
         root_layout.addLayout(header)
 
-        name_label = LabelWidget("Quantity: %d" % modifier_collection['quantity'])
+        name_label = LabelWidget("Quantity: %d" % self.modifier_collection['quantity'])
         header.addWidget(name_label, 1)
 
         delete_button = QPushButton("")
@@ -42,15 +43,16 @@ class ModifierItemWidget(QGroupBox):
 
     def delete(self):
         self.setParent(None)
-        self.on_delete()
+        self.modifier_collection_list.remove(self.modifier_collection)
 
 
 class AddModifiersDialog(QDialog):
 
-    def __init__(self, cookie: dict, modifier_collection: list, parent=None):
+    def __init__(self, cookie: dict, modifier_collection_list: list, parent=None):
         super().__init__(parent=parent)
 
         self.cookie = cookie
+        self.modifier_collection_list = modifier_collection_list
 
         self.setMinimumSize(*DIALOG_MIN_SIZE_A)
         self.setWindowTitle("Add Modifiers")
@@ -98,8 +100,8 @@ class AddModifiersDialog(QDialog):
             self.modifier_checkbox_list.append(checkbox)
 
         widget = QWidget()
-        self.modifier_item_list_container = QHBoxLayout(widget)
-        self.modifier_item_list_container.addStretch()
+        self.modifier_collection_widget_container = QHBoxLayout(widget)
+        self.modifier_collection_widget_container.addStretch()
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(widget)
@@ -120,19 +122,16 @@ class AddModifiersDialog(QDialog):
         self.apply_button = buttonbox.button(QDialogButtonBox.Apply)
         self.apply_button.clicked.connect(self.onApplyClick)
 
-        self.modifier_collection = modifier_collection
-        for modifier_applied in self.modifier_collection:
-            def on_delete():
-                try:
-                    self.modifier_collection.remove(modifier_applied)
-                except:
-                    pass
-            modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
-            self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
+        self.renderModifierCollectionList()
 
         self.checkApplicable()
 
-    def getModifierCollection(self) -> dict:
+    def renderModifierCollectionList(self):
+        for modifier_collection in self.modifier_collection_list:
+            modifier_collection_widget = ModifierCollectionWidget(modifier_collection, self.modifier_collection_list)
+            self.modifier_collection_widget_container.insertWidget(self.modifier_collection_widget_container.count() - 1, modifier_collection_widget)
+
+    def getModifierCollectionList(self) -> dict:
         return self.modifier_collection
 
     def onApplyClick(self):
@@ -140,15 +139,14 @@ class AddModifiersDialog(QDialog):
         for i in range(len(self.cookie['modifiers'])):
             if self.modifier_checkbox_list[i].isChecked():
                 modifier_list.append(self.cookie['modifiers'][i])
-        modifier_applied = {
+        modifier_collection = {
             'quantity': self.quantity,
             'modifier_list': modifier_list,
         }
-        self.modifier_collection.append(modifier_applied)
-        def on_delete():
-            self.modifier_collection.remove(modifier_applied)
-        modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
-        self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
+        self.modifier_collection_list.append(modifier_collection)
+        modifier_collection_widget = ModifierCollectionWidget(modifier_collection, self.modifier_collection_list)
+        self.modifier_collection_widget_container.insertWidget(self.modifier_collection_widget_container.count() - 1, modifier_collection_widget)
+
         self.quantity = 0
         self.quantity_label.setText('0')
         for checkbox in self.modifier_checkbox_list:

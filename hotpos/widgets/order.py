@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPu
 
 from ..config import RES_PATH, SIZE_A, SIZE_B
 from ..dialogs.add_discount import AddDiscountDialog
-from ..dialogs.add_modifiers import AddModifiersDialog, ModifierItemWidget
+from ..dialogs.add_modifiers import AddModifiersDialog, ModifierCollectionWidget
 from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
@@ -18,7 +18,7 @@ class OrderedCookieWidget(QGroupBox):
         self.cookie = cookie
         self.price_per_cookie = self.cookie['price']
         self.quantity = 1
-        self.modifier_collection = []
+        self.modifier_collection_list = []
 
         root_layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -68,39 +68,35 @@ class OrderedCookieWidget(QGroupBox):
         body.addWidget(button)
 
         footer = QWidget()
-        self.modifier_item_list_container = QHBoxLayout(footer)
-        self.modifier_item_list_container.addStretch()
-        self.modifier_item_list_scroll = QScrollArea()
-        self.modifier_item_list_scroll.hide()
-        self.modifier_item_list_scroll.setWidgetResizable(True)
-        self.modifier_item_list_scroll.setWidget(footer)
-        root_layout.addWidget(self.modifier_item_list_scroll)
+        self.modifier_collection_container = QHBoxLayout(footer)
+        self.modifier_collection_container.addStretch()
+        self.modifier_collection_container_scroll = QScrollArea()
+        self.modifier_collection_container_scroll.hide()
+        self.modifier_collection_container_scroll.setWidgetResizable(True)
+        self.modifier_collection_container_scroll.setWidget(footer)
+        root_layout.addWidget(self.modifier_collection_container_scroll)
 
     def onQuantityChange(self):
         self.quantity = self.quantity_spinbox.value()
         self.price_label.setText(str(self.price_per_cookie * self.quantity))
 
+    def renderModifierCollectionList(self):
+        for i in reversed(range(self.modifier_collection_container.count())):
+            widget = self.modifier_collection_container.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+        for modifier_collection in self.modifier_collection_list:
+            modifier_item_widget = ModifierCollectionWidget(modifier_collection, self.modifier_collection_list)
+            self.modifier_collection_container.insertWidget(self.modifier_collection_container.count() - 1, modifier_item_widget)
+
     def openAddModifiersDialog(self):
-        # buggy code, need refactoring.
-        dialog = AddModifiersDialog(self.cookie, self.modifier_collection)
+        dialog = AddModifiersDialog(self.cookie, self.modifier_collection_list)
         if dialog.exec_():
-            for i in reversed(range(self.modifier_item_list_container.count())):
-                widget = self.modifier_item_list_container.itemAt(i).widget()
-                if widget:
-                    widget.setParent(None)
-            self.modifier_collection = dialog.getModifierCollection()
-            for modifier_applied in self.modifier_collection:
-                def on_delete():
-                    try:
-                        self.modifier_collection.remove(modifier_applied)
-                    except:
-                        pass
-                modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
-                self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
-            if len(self.modifier_collection) > 0:
-                self.modifier_item_list_scroll.show()
+            self.renderModifierCollectionList()
+            if len(self.modifier_collection_list) > 0:
+                self.modifier_collection_container_scroll.show()
             else:
-                self.modifier_item_list_scroll.hide()
+                self.modifier_collection_container_scroll.hide()
         else:
             print("Cancel")
 
