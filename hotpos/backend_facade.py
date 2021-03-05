@@ -1,7 +1,9 @@
+from datetime import timedelta
 from datetime import date as Date
 import requests
 from urllib import request
 
+from cachier import cachier
 from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPixmap
 
@@ -57,10 +59,10 @@ class BackendFacade():
             [1210, 26200, Date.today()],
         ]
 
-    def getImage(self, url: str):
+    def getImage(self, url: str) -> QPixmap:
         try:
             url = BASE_URL + url
-            data = request.urlopen(url).read()
+            data = _getImageData(url)
             image_map = QPixmap()
             image_map.loadFromData(data)
         except:
@@ -121,3 +123,8 @@ class BackendFacade():
                 'table_list': [],
             },
         ]
+
+
+@cachier(stale_after=timedelta(days=3))
+def _getImageData(url: str) -> str:
+    return request.urlopen(url).read()
