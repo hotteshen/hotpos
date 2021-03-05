@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPu
 
 from ..config import RES_PATH, SIZE_A, SIZE_B
 from ..dialogs.add_discount import AddDiscountDialog
-from ..dialogs.add_modifiers import AddModifiersDialog
+from ..dialogs.add_modifiers import AddModifiersDialog, ModifierItemWidget
 from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
@@ -18,6 +18,7 @@ class OrderedCookieWidget(QGroupBox):
         self.cookie = cookie
         self.price_per_cookie = self.cookie['price']
         self.quantity = 1
+        self.modifier_collection = []
 
         root_layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -66,16 +67,31 @@ class OrderedCookieWidget(QGroupBox):
         button.clicked.connect(self.openEditPriceDialog)
         body.addWidget(button)
 
+        footer = QWidget()
+        self.modifier_item_list_container = QHBoxLayout(footer)
+        self.modifier_item_list_container.addStretch()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(footer)
+        root_layout.addWidget(scroll)
+
     def onQuantityChange(self):
         self.quantity = self.quantity_spinbox.value()
         self.price_label.setText(str(self.price_per_cookie * self.quantity))
 
     def openAddModifiersDialog(self):
-        dialog = AddModifiersDialog(self.cookie)
+        dialog = AddModifiersDialog(self.cookie, self.modifier_collection)
         if dialog.exec_():
-            from pprint import pprint
-            pprint(dialog.getModifierCollection())
-            print("Ok")
+            for i in reversed(range(self.modifier_item_list_container.count())):
+                widget = self.modifier_item_list_container.itemAt(i).widget()
+                if widget:
+                    widget.setParent(None)
+            self.modifier_collection = dialog.getModifierCollection()
+            for modifier_applied in self.modifier_collection:
+                def on_delete():
+                    self.modifier_collection.remove(modifier_applied)
+                modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
+                self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
         else:
             print("Cancel")
 

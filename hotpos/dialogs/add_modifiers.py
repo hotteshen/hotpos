@@ -47,11 +47,10 @@ class ModifierItemWidget(QGroupBox):
 
 class AddModifiersDialog(QDialog):
 
-    def __init__(self, cookie, parent=None):
+    def __init__(self, cookie: dict, modifier_collection: list, parent=None):
         super().__init__(parent=parent)
 
         self.cookie = cookie
-        self.modifier_collection = []
 
         self.setMinimumSize(*DIALOG_MIN_SIZE_A)
         self.setWindowTitle("Add Modifiers")
@@ -120,6 +119,13 @@ class AddModifiersDialog(QDialog):
         buttonbox.rejected.connect(self.reject)
         self.apply_button = buttonbox.button(QDialogButtonBox.Apply)
         self.apply_button.clicked.connect(self.onApplyClick)
+
+        self.modifier_collection = modifier_collection
+        for modifier_applied in self.modifier_collection:
+            def on_delete():
+                self.modifier_collection.remove(modifier_applied)
+            modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
+            self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
 
         self.checkApplicable()
 
