@@ -18,6 +18,7 @@ class BackendFacade():
     def __init__(self) -> None:
         self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
         self.access_token = ''
+        self.category_data = None
 
     def checkToken(self) -> bool:
         token = self.settings.value(KEY_API_TOKEN)
@@ -70,13 +71,16 @@ class BackendFacade():
         return image_map
 
     def getCategoryData(self):
+        if self.category_data != None:
+            return self.category_data
+
         main_category_list = []
 
         payload={'Authorization': 'Bearer ' + self.access_token}
 
         response = requests.request('GET', API_URL + '/categories', data=payload)
         if response.status_code != 200:
-            return []
+            self.category_data = []
         category_list = response.json()
 
         for category in category_list:
@@ -95,7 +99,7 @@ class BackendFacade():
 
         response = requests.request('GET', API_URL + '/items', data=payload)
         if response.status_code != 200:
-            return main_category_list
+            self.category_data = main_category_list
         item_list = response.json()
 
         for item in item_list:
@@ -110,7 +114,8 @@ class BackendFacade():
                                 main_category['sub_category_list'][0]['item_list'].append(item)
                                 sub_category['item_list'].append(item)
 
-        return main_category_list
+        self.category_data = main_category_list
+        return self.category_data
 
     def getTableData(self):
         return [
