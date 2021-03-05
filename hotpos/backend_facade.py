@@ -84,7 +84,6 @@ class BackendFacade():
                                 main_category['sub_category_list'][0]['item_list'].append(item)
                                 sub_category['item_list'].append(item)
 
-        pprint(main_category_list)
         return main_category_list
         # return [
         #     {

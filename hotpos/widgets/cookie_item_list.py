@@ -1,8 +1,10 @@
+from urllib import request
+
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QListWidget, QListWidgetItem, QLabel, QSizePolicy
 
-from ..config import RES_PATH, ITEM_ICON_SIZE, MAIN_CAT_LIST_WIDTH
+from ..config import RES_PATH, BASE_URL, ITEM_ICON_SIZE, MAIN_CAT_LIST_WIDTH
 from .label import LabelWidget
 
 
@@ -22,7 +24,13 @@ class ItemWidget(QWidget):
 
         image_label = QLabel()
         image_label.setAlignment(Qt.AlignCenter)
-        image_map = QPixmap(str(RES_PATH / 'category_images' / item.image))
+        try:
+            url = BASE_URL + item.image
+            data = request.urlopen(url).read()
+            image_map = QPixmap()
+            image_map.loadFromData(data)
+        except:
+            image_map = QPixmap(str(RES_PATH / 'category_images' / item.image))
         image_map = image_map.scaled(QSize(*ITEM_ICON_SIZE), Qt.KeepAspectRatio)
         image_label.setPixmap(image_map)
         root_layout.addWidget(image_label)
