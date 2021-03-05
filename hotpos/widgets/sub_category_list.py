@@ -6,7 +6,7 @@ from .label import LabelWidget
 
 
 class SubCategoryItemWidget(QWidget):
-    def __init__(self, name: str, parent: QWidget=None):
+    def __init__(self, name: str, parent: QWidget = None):
         super(SubCategoryItemWidget, self).__init__(parent=parent)
 
         root_layout = QVBoxLayout(self)
@@ -15,6 +15,7 @@ class SubCategoryItemWidget(QWidget):
         name.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         name.setFixedWidth(SIZE_C)
         root_layout.addWidget(name)
+
 
 class _ListWidget(QListWidget):
 

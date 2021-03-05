@@ -3,12 +3,11 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QTabWidget, QPushButton, QGroupBox
 
 from ..config import RES_PATH
-from ..widgets.label import LabelWidget
 
 
 class TableListWidget(QWidget):
 
-    def __init__(self, floor, parent: QWidget=None):
+    def __init__(self, floor, parent: QWidget = None):
         super(QWidget, self).__init__(parent=parent)
 
         root_layout = QVBoxLayout(self)
@@ -18,7 +17,7 @@ class TableListWidget(QWidget):
 
 class TablePage(QWidget):
 
-    def __init__(self, parent: QWidget=None):
+    def __init__(self, parent: QWidget = None):
         super(QWidget, self).__init__(parent=parent)
         self.app = QApplication.instance()
 

@@ -1,6 +1,5 @@
 from functools import partial
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit, QScrollArea, QSizePolicy
 
@@ -10,12 +9,12 @@ from ..widgets.label import LabelWidget
 
 class ModifierItemWidget(QWidget):
 
-    def __init__(self, quantity: int, modifier_list: list, parent=None):
+    def __init__(self, quantity: int, modifier_list: list, parent: QWidget = None):
         super().__init__(parent=parent)
 
         root_layout = QVBoxLayout(self)
         self.setFixedWidth(SIZE_C * 2)
-        self.setSizePolicy(QSizePolicy.Minimum,QSizePolicy.Minimum)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         header = QHBoxLayout()
         root_layout.addLayout(header)
@@ -35,7 +34,7 @@ class ModifierItemWidget(QWidget):
         root_layout.addLayout(body)
         for modifier in modifier_list:
             body.addWidget(LabelWidget(str(modifier['modifier'])))
-        
+
         root_layout.addStretch()
 
 

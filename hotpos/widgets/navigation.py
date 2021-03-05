@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QPushButton, QMenu, QAction
 
-from ..config import RES_PATH, SIZE_A, SIZE_B
+from ..config import RES_PATH, SIZE_B
 
 
 class NavigationWidget(QWidget):
@@ -134,6 +134,7 @@ class NavigationWidget(QWidget):
             self.take_away_button.setDown(True)
         elif page_name == 'table':
             self.table_button.setDown(True)
+
 
 def _styleButton(btn: QPushButton) -> QPushButton:
     btn.setStyleSheet('height: 64px; margin-bottom: 16px;')

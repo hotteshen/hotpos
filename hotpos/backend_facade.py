@@ -24,8 +24,9 @@ class BackendFacade():
         token = self.settings.value(KEY_API_TOKEN)
         if token is None:
             return False
-        payload={'Authorization': 'Bearer ' + token}
-        response = requests.request('GET', API_URL + '/categories', data=payload)
+        payload = {'Authorization': 'Bearer ' + token}
+        response = requests.request(
+                'GET', API_URL + '/categories', data=payload)
         if response.status_code != 200:
             self.settings.setValue(KEY_API_TOKEN, '')
             return False
@@ -34,7 +35,7 @@ class BackendFacade():
 
     def logIn(self, code: str) -> bool:
         url = API_URL + '/login'
-        payload={'pincode': code}
+        payload = {'pincode': code}
         response = requests.request('POST', url, data=payload)
         if response.status_code != 200:
             return False
@@ -71,14 +72,15 @@ class BackendFacade():
         return image_map
 
     def getCategoryData(self):
-        if self.category_data != None:
+        if self.category_data is not None:
             return self.category_data
 
         main_category_list = []
 
-        payload={'Authorization': 'Bearer ' + self.access_token}
+        payload = {'Authorization': 'Bearer ' + self.access_token}
 
-        response = requests.request('GET', API_URL + '/categories', data=payload)
+        response = requests.request(
+                'GET', API_URL + '/categories', data=payload)
         if response.status_code != 200:
             self.category_data = []
         category_list = response.json()
@@ -97,7 +99,8 @@ class BackendFacade():
                     category['item_list'] = []
                     main_category['sub_category_list'].append(category)
 
-        response = requests.request('GET', API_URL + '/items', data=payload)
+        response = requests.request(
+                'GET', API_URL + '/items', data=payload)
         if response.status_code != 200:
             self.category_data = main_category_list
         item_list = response.json()

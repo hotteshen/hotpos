@@ -21,8 +21,8 @@ class OrdersTableWidget(QTableWidget):
         self.setHorizontalHeaderLabels(horHeaders)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.setData([])
- 
-    def setData(self, data: list, sortColumn=0):
+
+    def setData(self, data: list, sortColumn: int = 0):
         def toString(x):
             if type(x) == int:
                 return str(x)

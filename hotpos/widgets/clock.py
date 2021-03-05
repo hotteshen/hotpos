@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from .label import LabelWidget
 
+
 class ClockWidget(QWidget):
 
     def __init__(self):
@@ -19,7 +20,7 @@ class ClockWidget(QWidget):
 
         timer = QTimer(self)
         timer.timeout.connect(self.showTime)
-        timer.start(1000) # update every second
+        timer.start(1000)  # update every second
         self.showTime()
 
     def showTime(self):

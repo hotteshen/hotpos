@@ -28,7 +28,7 @@ class LoginPage(QWidget):
         for code_input in self.code_inputs:
             code_input.setAlignment(Qt.AlignCenter)
             code_input.setEchoMode(QLineEdit.Password)
-            code_input.setStyleSheet('QLineEdit { font-size: %dpx; border: none; }' %  30)
+            code_input.setStyleSheet('QLineEdit { font-size: %dpx; border: none; }' % 30)
             code_input.setReadOnly(True)
             display_layout.addWidget(code_input)
 

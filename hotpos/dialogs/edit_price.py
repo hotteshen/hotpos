@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QVBoxLayout, QDialog, QDialogButtonBox, QLineEdit
 
-from ..config import DIALOG_MIN_SIZE_A
 from ..widgets.numberpad import NumberPadWidget
 
 

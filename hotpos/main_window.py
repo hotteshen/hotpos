@@ -17,7 +17,7 @@ class MainWindow(QWidget):
         self.app = QApplication.instance()
 
         self.setWindowTitle(APP_NAME)
-        self.setWindowFlags( Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint )
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
         self.setWindowIcon(QIcon(str(RES_PATH / 'icon.png')))
         self.setMinimumSize(*WINDOW_MIN_SIZE)
 

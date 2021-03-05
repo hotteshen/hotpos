@@ -1,8 +1,7 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
 
-from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C
+from ..config import RES_PATH, SIZE_A, SIZE_B
 from ..dialogs.add_modifiers import AddModifiersDialog
 from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
@@ -20,7 +19,7 @@ class OrderedCookieWidget(QGroupBox):
         self.quantity = 1
 
         root_layout = QVBoxLayout(self)
-        self.setSizePolicy(QSizePolicy.Minimum,QSizePolicy.Minimum)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         header = QHBoxLayout()
         root_layout.addLayout(header)
@@ -81,7 +80,9 @@ class OrderedCookieWidget(QGroupBox):
         dialog = EditPriceDialog(self.price_per_cookie)
         if dialog.exec_():
             self.price_per_cookie = dialog.getPrice()
-            self.price_label.setText(str(self.price_per_cookie * self.quantity))
+            self.price_label.setText(
+                    str(self.price_per_cookie * self.quantity)
+            )
         else:
             pass
 
@@ -159,7 +160,7 @@ class OrderWidget(GroupBoxWidget):
 
         layout = QHBoxLayout()
         row_layout.addLayout(layout)
-        layout.addWidget(LabelWidget('Sub Total'), 1)
+        layout.addWidget(LabelWidget('Total'), 1)
         self.sub_total_label = LabelWidget('0.00')
         layout.addWidget(self.sub_total_label, 0)
 
