@@ -43,6 +43,8 @@ class LoginPage(QWidget):
         positions = [(i, j) for i in range(4) for j in range(3)]
         for position, code in zip(positions, key_codes):
             button = QPushButton(str(code))
+            if code == 'DEL':
+                button.setProperty('class', 'danger')
             button.clicked.connect(partial(self.buttonPress, code))
             button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
             button_layout.addWidget(button, *position)
@@ -69,10 +71,10 @@ class LoginPage(QWidget):
             self.code = ''
         elif code == 'OK':
             if len(self.code) == 4:
-                result = self.app.backend().login(self.code)
+                result = self.app.backend().logIn(self.code)
                 if result:
                     self.app.main_window.showPage('home')
                 else:
-                    for code_input in self.code_inputs:
-                        code_input.setText('')
                     self.code = ''
+                for code_input in self.code_inputs:
+                    code_input.setText('')

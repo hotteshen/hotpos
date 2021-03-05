@@ -29,7 +29,7 @@ class BackendFacade():
         self.access_token = token
         return True
 
-    def login(self, code: str) -> bool:
+    def logIn(self, code: str) -> bool:
         url = API_URL + '/login'
         payload={'pincode': code}
         response = requests.request('POST', url, data=payload)
@@ -38,6 +38,10 @@ class BackendFacade():
         self.access_token = response.json()['access_token']
         self.settings.setValue(KEY_API_TOKEN, self.access_token)
         return True
+
+    def logOut(self):
+        self.access_token = ''
+        self.settings.setValue(KEY_API_TOKEN, '')
 
     def getLateOrderList(self):
         return [

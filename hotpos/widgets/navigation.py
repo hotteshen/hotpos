@@ -107,12 +107,13 @@ class NavigationWidget(QWidget):
 
         action = QAction(self)
         action.setText("Log Out")
+        action.triggered.connect(self.app.logOut)
         menu.addAction(action)
 
         action = QAction(self)
         action.setText("Exit")
+        action.triggered.connect(self.app.exit)
         menu.addAction(action)
-
 
     def showHomePage(self):
         self.app.main_window.showPage('home')

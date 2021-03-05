@@ -17,3 +17,10 @@ class Application(QApplication):
 
     def backend(self) -> BackendFacade:
         return self.backend_facade
+
+    def exit(self):
+        self.main_window.close()
+
+    def logOut(self):
+        self.backend_facade.logOut()
+        self.main_window.showPage('login')
