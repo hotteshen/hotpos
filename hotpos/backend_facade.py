@@ -1,10 +1,11 @@
 from datetime import date as Date
 from pprint import pprint
 import requests
+from urllib import request
 
-from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QPixmap
 
-from .config import API_URL, SETTING_NAME, SETTING_VERSION
+from .config import API_URL, BASE_URL, RES_PATH
 
 
 KEY_API_TOKEN = 'token'
@@ -13,7 +14,6 @@ KEY_API_TOKEN = 'token'
 class BackendFacade():
 
     def __init__(self) -> None:
-        # self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
         self.access_token = ''
 
     def checkToken(self) -> bool:
@@ -42,6 +42,16 @@ class BackendFacade():
             [1211, 23700, Date.today()],
             [1210, 26200, Date.today()],
         ]
+
+    def getImage(self, url: str):
+        try:
+            url = BASE_URL + url
+            data = request.urlopen(url).read()
+            image_map = QPixmap()
+            image_map.loadFromData(data)
+        except:
+            image_map = QPixmap(str(RES_PATH / 'icon.png'))
+        return image_map
 
     def getCategoryData(self):
         main_category_list = []
@@ -85,59 +95,6 @@ class BackendFacade():
                                 sub_category['item_list'].append(item)
 
         return main_category_list
-        # return [
-        #     {
-        #         'name': 'Food',
-        #         'image': 'main-category-food.png',
-        #         'sub_category_list': [
-        #             {
-        #                 'name': 'All',
-        #                 'image': None,
-        #                 'item_list': [
-        #                     {'name': 'Wine', 'image': 'item-wine.jpg', 'price': 1500.0, 'modifier_list': []},
-        #                     {'name': 'Banana Salad', 'image': 'item-banana-salad.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo',]},
-        #                     {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
-        #                     {'name': 'Chicken', 'image': 'item-chicken.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
-        #                     {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'price': 1500.0, 'modifier_list': []},
-        #                 ],
-        #             },
-        #             {
-        #                 'name': 'In Stock',
-        #                 'image': None,
-        #                 'item_list': [
-        #                     {'name': 'Chicken', 'image': 'item-chicken.jpg', 'price': 1500.0, 'modifier_list': ['BBQ', 'Buffalo', 'Spicy BBQ', 'Honey Mustard',]},
-        #                 ],
-        #             },
-        #         ],
-        #     },
-        #     {
-        #         'name': 'Fast Foods',
-        #         'image': 'main-category-fast-food.png',
-        #         'sub_category_list': [
-        #             {
-        #                 'name': 'All',
-        #                 'image': None,
-        #                 'item_list': [
-        #                     {'name': 'Sandwitch', 'image': 'item-sandwitch.jpg', 'price': 1500.0, 'modifier_list': []},
-        #                     {'name': 'Instant Noodle', 'image': 'item-instant-noodle.jpg', 'price': 1500.0, 'modifier_list': []},
-        #                 ],
-        #             },
-        #         ]
-        #     },
-        #     {
-        #         'name': 'Drink',
-        #         'image': 'main-category-drink.png',
-        #         'sub_category_list': [
-        #             {
-        #                 'name': 'All',
-        #                 'image': None,
-        #                 'item_list': [
-        #                     {'name': 'Wine', 'image': 'item-wine.jpg', 'price': 1500.0, 'modifier_list': []},
-        #                 ],
-        #             },
-        #         ]
-        #     },
-        # ]
 
     def getTableData(self):
         return [
