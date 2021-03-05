@@ -48,7 +48,9 @@ class OrderedCookieWidget(QGroupBox):
 
         button = QPushButton("+M")
         button.setFixedWidth(SIZE_B)
-        if len(self.cookie['modifier_list']) == 0:
+        from pprint import pprint
+        pprint(self.cookie)
+        if len(self.cookie['modifiers']) == 0:
             button.setEnabled(False)
         else:
             button.clicked.connect(self.openAddModifiersDialog)

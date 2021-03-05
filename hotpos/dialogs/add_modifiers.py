@@ -84,9 +84,9 @@ class AddModifiersDialog(QDialog):
         gb_root.addWidget(scroll)
 
         self.modifier_checkbox_list = []
-        modifier_list = self.cookie['modifier_list']
+        modifier_list = self.cookie['modifiers']
         for modifier in modifier_list:
-            checkbox = QCheckBox(modifier)
+            checkbox = QCheckBox(modifier['modifier'])
             checkbox.clicked.connect(self.checkApplicable)
             modifier_checklist_layout.addWidget(checkbox)
             self.modifier_checkbox_list.append(checkbox)
