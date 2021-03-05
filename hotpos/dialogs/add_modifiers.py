@@ -1,4 +1,5 @@
 from functools import partial
+from typing import Callable
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit, QScrollArea, QSizePolicy
@@ -7,10 +8,12 @@ from ..config import RES_PATH, SIZE_A, SIZE_B, SIZE_C, DIALOG_MIN_SIZE_A
 from ..widgets.label import LabelWidget
 
 
-class ModifierItemWidget(QWidget):
+class ModifierItemWidget(QGroupBox):
 
-    def __init__(self, quantity: int, modifier_list: list, parent: QWidget = None):
+    def __init__(self, modifier_collection: dict, on_delete: Callable, parent: QWidget = None):
         super().__init__(parent=parent)
+
+        self.on_delete = on_delete
 
         root_layout = QVBoxLayout(self)
         self.setFixedWidth(SIZE_C * 2)
@@ -19,23 +22,27 @@ class ModifierItemWidget(QWidget):
         header = QHBoxLayout()
         root_layout.addLayout(header)
 
-        name_label = LabelWidget("Quantity: %d" % quantity)
+        name_label = LabelWidget("Quantity: %d" % modifier_collection['quantity'])
         header.addWidget(name_label, 1)
 
         delete_button = QPushButton("")
         delete_button.setFixedHeight(SIZE_A)
         delete_button.setFixedWidth(SIZE_A)
         delete_button.setIcon(QIcon(str(RES_PATH / 'icon-delete.png')))
-        delete_button.clicked.connect(lambda: self.setParent(None))
+        delete_button.clicked.connect(self.delete)
         delete_button.setFixedWidth(SIZE_B)
         header.addWidget(delete_button, 0)
 
         body = QVBoxLayout()
         root_layout.addLayout(body)
-        for modifier in modifier_list:
+        for modifier in modifier_collection['modifier_list']:
             body.addWidget(LabelWidget(str(modifier['modifier'])))
 
         root_layout.addStretch()
+
+    def delete(self):
+        self.setParent(None)
+        self.on_delete()
 
 
 class AddModifiersDialog(QDialog):
@@ -44,6 +51,7 @@ class AddModifiersDialog(QDialog):
         super().__init__(parent=parent)
 
         self.cookie = cookie
+        self.modifier_collection = []
 
         self.setMinimumSize(*DIALOG_MIN_SIZE_A)
         self.setWindowTitle("Add Modifiers")
@@ -115,12 +123,22 @@ class AddModifiersDialog(QDialog):
 
         self.checkApplicable()
 
+    def getModifierCollection(self) -> dict:
+        return self.modifier_collection
+
     def onApplyClick(self):
         modifier_list = []
         for i in range(len(self.cookie['modifiers'])):
             if self.modifier_checkbox_list[i].isChecked():
                 modifier_list.append(self.cookie['modifiers'][i])
-        modifier_item_widget = ModifierItemWidget(self.quantity, modifier_list=modifier_list)
+        modifier_applied = {
+            'quantity': self.quantity,
+            'modifier_list': modifier_list,
+        }
+        self.modifier_collection.append(modifier_applied)
+        def on_delete():
+            self.modifier_collection.remove(modifier_applied)
+        modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
         self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
         self.quantity = 0
         self.quantity_label.setText('0')

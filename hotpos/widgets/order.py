@@ -73,6 +73,8 @@ class OrderedCookieWidget(QGroupBox):
     def openAddModifiersDialog(self):
         dialog = AddModifiersDialog(self.cookie)
         if dialog.exec_():
+            from pprint import pprint
+            pprint(dialog.getModifierCollection())
             print("Ok")
         else:
             print("Cancel")
