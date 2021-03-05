@@ -123,7 +123,10 @@ class AddModifiersDialog(QDialog):
         self.modifier_collection = modifier_collection
         for modifier_applied in self.modifier_collection:
             def on_delete():
-                self.modifier_collection.remove(modifier_applied)
+                try:
+                    self.modifier_collection.remove(modifier_applied)
+                except:
+                    pass
             modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
             self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
 
