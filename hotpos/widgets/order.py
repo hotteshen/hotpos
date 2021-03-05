@@ -3,11 +3,41 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPu
 
 from ..config import RES_PATH, SIZE_A, SIZE_B
 from ..dialogs.add_discount import AddDiscountDialog
-from ..dialogs.add_modifiers import AddModifiersDialog, ModifierCollectionWidget
+from ..dialogs.add_modifiers import AddModifiersDialog
 from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
+
+
+class ModifierCollectionWidget(QGroupBox):
+
+    def __init__(self, modifier_collection: dict, modifier_collection_list: list, parent: QWidget = None):
+        super().__init__(parent=parent)
+
+        self.modifier_collection = modifier_collection
+        self.modifier_collection_list = modifier_collection_list
+
+        root_layout = QHBoxLayout(self)
+
+        name_label = LabelWidget("Quantity: %d" % self.modifier_collection['quantity'])
+        root_layout.addWidget(name_label, 1)
+
+        modifiers_string = ", ".join([m['modifier'] for m in modifier_collection['modifier_list']])
+        modifier_label = LabelWidget(modifiers_string)
+        root_layout.addWidget(modifier_label, 1)
+
+        delete_button = QPushButton("")
+        delete_button.setFixedHeight(SIZE_A)
+        delete_button.setFixedWidth(SIZE_A)
+        delete_button.setIcon(QIcon(str(RES_PATH / 'icon-delete.png')))
+        delete_button.clicked.connect(self.delete)
+        delete_button.setFixedWidth(SIZE_B)
+        root_layout.addWidget(delete_button, 0)
+
+    def delete(self):
+        self.setParent(None)
+        self.modifier_collection_list.remove(self.modifier_collection)
 
 
 class OrderedCookieWidget(QGroupBox):
@@ -68,13 +98,8 @@ class OrderedCookieWidget(QGroupBox):
         body.addWidget(button)
 
         footer = QWidget()
-        self.modifier_collection_container = QHBoxLayout(footer)
-        self.modifier_collection_container.addStretch()
-        self.modifier_collection_container_scroll = QScrollArea()
-        self.modifier_collection_container_scroll.hide()
-        self.modifier_collection_container_scroll.setWidgetResizable(True)
-        self.modifier_collection_container_scroll.setWidget(footer)
-        root_layout.addWidget(self.modifier_collection_container_scroll)
+        root_layout.addWidget(footer)
+        self.modifier_collection_container = QVBoxLayout(footer)
 
     def onQuantityChange(self):
         self.quantity = self.quantity_spinbox.value()
@@ -87,18 +112,12 @@ class OrderedCookieWidget(QGroupBox):
                 widget.setParent(None)
         for modifier_collection in self.modifier_collection_list:
             modifier_item_widget = ModifierCollectionWidget(modifier_collection, self.modifier_collection_list)
-            self.modifier_collection_container.insertWidget(self.modifier_collection_container.count() - 1, modifier_item_widget)
+            self.modifier_collection_container.addWidget(modifier_item_widget)
 
     def openAddModifiersDialog(self):
         dialog = AddModifiersDialog(self.cookie, self.modifier_collection_list)
         if dialog.exec_():
             self.renderModifierCollectionList()
-            if len(self.modifier_collection_list) > 0:
-                self.modifier_collection_container_scroll.show()
-            else:
-                self.modifier_collection_container_scroll.hide()
-        else:
-            print("Cancel")
 
     def openEditPriceDialog(self):
         dialog = EditPriceDialog(self.price_per_cookie)

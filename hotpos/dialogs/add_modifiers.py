@@ -1,5 +1,4 @@
 from functools import partial
-from typing import Callable
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QPushButton, QGroupBox, QCheckBox, QTextEdit, QScrollArea, QSizePolicy
