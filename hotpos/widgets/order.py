@@ -2,6 +2,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
 
 from ..config import RES_PATH, SIZE_A, SIZE_B
+from ..dialogs.add_discount import AddDiscountDialog
 from ..dialogs.add_modifiers import AddModifiersDialog
 from ..dialogs.edit_price import EditPriceDialog
 from .group_box import GroupBoxWidget
@@ -143,6 +144,7 @@ class OrderWidget(GroupBoxWidget):
         button = QPushButton("")
         button.setFixedWidth(SIZE_B)
         button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))
+        button.clicked.connect(self.openAddDiscountDialog)
         layout.addWidget(button, 0)
 
         widget = QWidget()
@@ -169,3 +171,10 @@ class OrderWidget(GroupBoxWidget):
         row_layout.addWidget(LabelWidget(), 1)
         button = QPushButton("CHECKOUT")
         row_layout.addWidget(button, 1)
+
+    def openAddDiscountDialog(self):
+        dialog = AddDiscountDialog(0.0)
+        if dialog.exec_():
+            print("Ok")
+        else:
+            print("Cancel")
