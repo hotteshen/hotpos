@@ -70,16 +70,18 @@ class OrderedCookieWidget(QGroupBox):
         footer = QWidget()
         self.modifier_item_list_container = QHBoxLayout(footer)
         self.modifier_item_list_container.addStretch()
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(footer)
-        root_layout.addWidget(scroll)
+        self.modifier_item_list_scroll = QScrollArea()
+        self.modifier_item_list_scroll.hide()
+        self.modifier_item_list_scroll.setWidgetResizable(True)
+        self.modifier_item_list_scroll.setWidget(footer)
+        root_layout.addWidget(self.modifier_item_list_scroll)
 
     def onQuantityChange(self):
         self.quantity = self.quantity_spinbox.value()
         self.price_label.setText(str(self.price_per_cookie * self.quantity))
 
     def openAddModifiersDialog(self):
+        # buggy code, need refactoring.
         dialog = AddModifiersDialog(self.cookie, self.modifier_collection)
         if dialog.exec_():
             for i in reversed(range(self.modifier_item_list_container.count())):
@@ -92,6 +94,10 @@ class OrderedCookieWidget(QGroupBox):
                     self.modifier_collection.remove(modifier_applied)
                 modifier_item_widget = ModifierItemWidget(modifier_applied, on_delete=on_delete)
                 self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
+            if len(self.modifier_collection) > 0:
+                self.modifier_item_list_scroll.show()
+            else:
+                self.modifier_item_list_scroll.hide()
         else:
             print("Cancel")
 
