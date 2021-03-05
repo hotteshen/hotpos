@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 
 from .pages.login import LoginPage
 from .pages.home import HomePage
@@ -14,6 +14,7 @@ class MainWindow(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.app = QApplication.instance()
 
         self.setWindowTitle(APP_NAME)
         self.setWindowFlags( Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint )
@@ -38,7 +39,10 @@ class MainWindow(QWidget):
         self.table_page = TablePage()
         body.addWidget(self.table_page)
 
-        self.showPage('login')
+        if self.app.backend().checkToken():
+            self.showPage('home')
+        else:
+            self.showPage('login')
 
     def showPage(self, page_name: str):
         self.navigation.hide()

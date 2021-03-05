@@ -1,11 +1,11 @@
 from datetime import date as Date
-from pprint import pprint
 import requests
 from urllib import request
 
+from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPixmap
 
-from .config import API_URL, BASE_URL, RES_PATH
+from .config import API_URL, BASE_URL, RES_PATH, SETTING_NAME, SETTING_VERSION
 
 
 KEY_API_TOKEN = 'token'
@@ -14,11 +14,20 @@ KEY_API_TOKEN = 'token'
 class BackendFacade():
 
     def __init__(self) -> None:
+        self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
         self.access_token = ''
 
     def checkToken(self) -> bool:
-        if self.settings.getValue(KEY_API_TOKEN) is None:
+        token = self.settings.value(KEY_API_TOKEN)
+        if token is None:
             return False
+        payload={'Authorization': 'Bearer ' + token}
+        response = requests.request('GET', API_URL + '/categories', data=payload)
+        if response.status_code != 200:
+            self.settings.setValue(KEY_API_TOKEN, '')
+            return False
+        self.access_token = token
+        return True
 
     def login(self, code: str) -> bool:
         url = API_URL + '/login'
@@ -27,6 +36,7 @@ class BackendFacade():
         if response.status_code != 200:
             return False
         self.access_token = response.json()['access_token']
+        self.settings.setValue(KEY_API_TOKEN, self.access_token)
         return True
 
     def getLateOrderList(self):
