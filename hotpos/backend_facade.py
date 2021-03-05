@@ -104,6 +104,7 @@ class BackendFacade():
 
         for item in item_list:
             item['image'] = item['image']['image']
+            item['price'] = float(item['price'])
             for main_category in main_category_list:
                 if item['category_id'] == main_category['id']:
                     main_category['sub_category_list'][0]['item_list'].append(item)

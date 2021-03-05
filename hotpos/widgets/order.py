@@ -16,6 +16,8 @@ class OrderedCookieWidget(QGroupBox):
         super().__init__(parent=parent)
 
         self.cookie = cookie
+        self.price_per_cookie = self.cookie['price']
+        self.quantity = 1
 
         root_layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Minimum,QSizePolicy.Minimum)
@@ -37,14 +39,14 @@ class OrderedCookieWidget(QGroupBox):
         body = QHBoxLayout()
         root_layout.addLayout(body)
 
-        quantity_spinbox = HorizontalSpinBox()
-        quantity_spinbox.setStyleSheet('QSpinBox::up-button  { subcontrol-position: center right; } QSpinBox::down-button  { subcontrol-position: center left; }')
-        quantity_spinbox.setAlignment(Qt.AlignCenter)
-        quantity_spinbox.setFixedWidth(SIZE_C)
-        body.addWidget(quantity_spinbox)
+        self.quantity_spinbox = HorizontalSpinBox()
+        self.quantity_spinbox.setRange(1, 100)
+        self.quantity_spinbox.setValue(1)
+        self.quantity_spinbox.valueChanged.connect(self.onQuantityChange)
+        body.addWidget(self.quantity_spinbox)
 
-        price_label = LabelWidget("0").setCenter()
-        body.addWidget(price_label)
+        self.price_label = LabelWidget(str(self.price_per_cookie)).setCenter()
+        body.addWidget(self.price_label)
 
         button = QPushButton("+M")
         button.setFixedWidth(SIZE_B)
@@ -64,6 +66,10 @@ class OrderedCookieWidget(QGroupBox):
         button.clicked.connect(self.openEditPriceDialog)
         body.addWidget(button)
 
+    def onQuantityChange(self):
+        self.quantity = self.quantity_spinbox.value()
+        self.price_label.setText(str(self.price_per_cookie * self.quantity))
+
     def openAddModifiersDialog(self):
         dialog = AddModifiersDialog(self.cookie)
         if dialog.exec_():
@@ -72,11 +78,12 @@ class OrderedCookieWidget(QGroupBox):
             print("Cancel")
 
     def openEditPriceDialog(self):
-        dialog = EditPriceDialog(self.cookie)
+        dialog = EditPriceDialog(self.price_per_cookie)
         if dialog.exec_():
-            print("Ok")
+            self.price_per_cookie = dialog.getPrice()
+            self.price_label.setText(str(self.price_per_cookie * self.quantity))
         else:
-            print("Cancel")
+            pass
 
 
 class OrderWidget(GroupBoxWidget):
