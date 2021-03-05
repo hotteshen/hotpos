@@ -34,7 +34,7 @@ class ModifierItemWidget(QWidget):
         body = QVBoxLayout()
         root_layout.addLayout(body)
         for modifier in modifier_list:
-            body.addWidget(LabelWidget(str(modifier)))
+            body.addWidget(LabelWidget(str(modifier['modifier'])))
         
         root_layout.addStretch()
 
@@ -118,13 +118,13 @@ class AddModifiersDialog(QDialog):
 
     def onApplyClick(self):
         modifier_list = []
-        for i in range(len(self.cookie['modifier_list'])):
+        for i in range(len(self.cookie['modifiers'])):
             if self.modifier_checkbox_list[i].isChecked():
-                modifier_list.append(self.cookie['modifier_list'][i])
-        print(modifier_list)
+                modifier_list.append(self.cookie['modifiers'][i])
         modifier_item_widget = ModifierItemWidget(self.quantity, modifier_list=modifier_list)
         self.modifier_item_list_container.insertWidget(self.modifier_item_list_container.count() - 1, modifier_item_widget)
         self.quantity = 0
+        self.quantity_label.setText('0')
         for checkbox in self.modifier_checkbox_list:
             checkbox.setChecked(False)
         self.checkApplicable()
