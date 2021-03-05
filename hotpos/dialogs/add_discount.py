@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QTabWidget, QSpinBox
 
+from ..config import DIALOG_MIN_SIZE_C
 from ..widgets.label import LabelWidget
 
 
@@ -10,6 +11,9 @@ class AddDiscountDialog(QDialog):
 
         self.price_per_cookie = price_per_cookie
 
+        self.setMinimumSize(*DIALOG_MIN_SIZE_C)
+        self.setWindowTitle("Add Discount")
+
         root_layout = QVBoxLayout(self)
 
         tabs = QTabWidget()
@@ -19,16 +23,16 @@ class AddDiscountDialog(QDialog):
         layout = QHBoxLayout(percentage_tab)
         percentage_spinbox = QSpinBox()
         percentage_spinbox.setRange(1, 100)
-        layout.addWidget(percentage_spinbox)
-        layout.addWidget(LabelWidget("%"))
+        layout.addWidget(percentage_spinbox, 1)
+        layout.addWidget(LabelWidget("%"), 0)
         tabs.addTab(percentage_tab, "Percentage")
 
         amount_tab = QWidget()
         layout = QHBoxLayout(amount_tab)
         amount_spinbox = QSpinBox()
         amount_spinbox.setRange(1, 100)
-        layout.addWidget(amount_spinbox)
-        layout.addWidget(LabelWidget("LBP"))
+        layout.addWidget(amount_spinbox, 1)
+        layout.addWidget(LabelWidget("LBP"), 0)
         tabs.addTab(amount_tab, "Amount")
 
         QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel

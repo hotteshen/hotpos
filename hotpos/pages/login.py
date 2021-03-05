@@ -55,9 +55,16 @@ class LoginPage(QWidget):
         code_layout.addLayout(button_layout, 0)
         code_layout.addWidget(QWidget(), 1)
 
+        code_widget = QWidget()
+        code_widget.setLayout(code_layout)
+        code_widget.setMaximumWidth(300)
+
         root_layout = QHBoxLayout()
-        root_layout.addLayout(info_layout, 1)
-        root_layout.addLayout(code_layout, 1)
+        root_layout.addStretch()
+        root_layout.addLayout(info_layout)
+        root_layout.addStretch()
+        root_layout.addWidget(code_widget)
+        root_layout.addStretch()
         self.setLayout(root_layout)
 
     def buttonPress(self, code):

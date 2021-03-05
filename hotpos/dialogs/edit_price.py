@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QVBoxLayout, QDialog, QDialogButtonBox, QLineEdit
 
+from ..config import DIALOG_MIN_SIZE_B
 from ..widgets.numberpad import NumberPadWidget
 
 
@@ -10,7 +11,7 @@ class EditPriceDialog(QDialog):
 
         self.price_per_cookie = price_per_cookie
 
-        # self.setMinimumSize(*DIALOG_MIN_SIZE_A)
+        self.setMinimumWidth(DIALOG_MIN_SIZE_B[0])
         self.setWindowTitle("Edit Price")
 
         root_layout = QVBoxLayout(self)
