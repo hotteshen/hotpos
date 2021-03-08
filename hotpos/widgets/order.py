@@ -173,7 +173,7 @@ class OrderWidget(GroupBoxWidget):
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Tax'), 1)
-        self.tax_label = LabelWidget('0.00')
+        self.tax_label = LabelWidget(str(self.app.backend().companyTax()))
         layout.addWidget(self.tax_label, 0)
 
         row_layout = QHBoxLayout()
@@ -192,7 +192,7 @@ class OrderWidget(GroupBoxWidget):
         widget = QWidget()
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
-        layout.addWidget(LabelWidget('Tax'), 1)
+        layout.addWidget(LabelWidget('Customer'), 1)
         button = QPushButton("")
         button.setFixedWidth(SIZE_B)
         button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))

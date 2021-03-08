@@ -1,4 +1,5 @@
 cachier
+pyjwt
 pyqt5==5.14.0
 qt-material
 requests

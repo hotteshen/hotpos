@@ -1,6 +1,14 @@
 from typing import List
 
 
+class User:
+
+    def __init__(self, username: str, name: str, branch_id: int):
+        self.username = username
+        self.name = name
+        self.branch_id = branch_id
+
+
 class CookieModifier:
 
     def __init__(self, name: str, price: float):

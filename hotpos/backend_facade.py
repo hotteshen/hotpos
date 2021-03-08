@@ -4,10 +4,12 @@ import requests
 from urllib import request
 
 from cachier import cachier
+import jwt
 from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPixmap
 
 from .config import API_URL, BASE_URL, RES_PATH, SETTING_NAME, SETTING_VERSION
+from .models import User
 
 
 KEY_API_TOKEN = 'token'
@@ -19,6 +21,8 @@ class BackendFacade():
         self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
         self.access_token = ''
         self.category_data = None
+        self.user = None
+        self.company_tax = 0.0
 
     def checkToken(self) -> bool:
         token = self.settings.value(KEY_API_TOKEN)
@@ -31,7 +35,31 @@ class BackendFacade():
             self.settings.setValue(KEY_API_TOKEN, '')
             return False
         self.access_token = token
+        self.user = self.getUser()
+        self.company_tax = self._getTax()
         return True
+
+    def companyTax(self) -> float:
+        return self.company_tax
+
+    def _getTax(self) -> float:
+        payload = {'Authorization': 'Bearer ' + self.access_token}
+        response = requests.request(
+                'GET', API_URL + '/branchinfo/%d' % self.user.branch_id, data=payload)
+        if response.status_code != 200:
+            return 0.0
+        return response.json()['company_tax']
+
+    def getUser(self) -> User:
+        token = self.settings.value(KEY_API_TOKEN)
+        if token is None:
+            return None
+        try:
+            options = {'verify_signature': False, 'verify_exp': True, 'verify_nbf': False, 'verify_iat': True, 'verify_aud': False}
+            data = jwt.decode(token, algorithms=["HS256"], options=options)
+            return User(data['username'], data['name'], data['branch_id'])
+        except:
+            return None
 
     def logIn(self, code: str) -> bool:
         url = API_URL + '/login'
