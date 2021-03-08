@@ -5,6 +5,7 @@ from ..config import RES_PATH, SIZE_A, SIZE_B
 from ..dialogs.add_discount import AddDiscountDialog
 from ..dialogs.add_modifiers import AddModifiersDialog
 from ..dialogs.edit_price import EditPriceDialog
+from ..models import Cookie, CookieModifier, CookieOrder, CookieModifierCollection, OrderCollection
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
@@ -12,18 +13,18 @@ from .label import LabelWidget
 
 class ModifierCollectionWidget(QGroupBox):
 
-    def __init__(self, modifier_collection: dict, modifier_collection_list: list, parent: QWidget = None):
+    def __init__(self, modifier_collection: CookieModifierCollection, cookie_order: CookieOrder, parent: QWidget = None):
         super().__init__(parent=parent)
 
         self.modifier_collection = modifier_collection
-        self.modifier_collection_list = modifier_collection_list
+        self.cookie_order = cookie_order
 
         root_layout = QHBoxLayout(self)
 
-        name_label = LabelWidget("Quantity: %d" % self.modifier_collection['quantity'])
+        name_label = LabelWidget("Quantity: %d" % self.modifier_collection.quantity)
         root_layout.addWidget(name_label, 1)
 
-        modifiers_string = ", ".join([m['modifier'] for m in modifier_collection['modifier_list']])
+        modifiers_string = ", ".join([m.name for m in self.modifier_collection.modifier_list])
         modifier_label = LabelWidget(modifiers_string)
         root_layout.addWidget(modifier_label, 1)
 
@@ -37,18 +38,15 @@ class ModifierCollectionWidget(QGroupBox):
 
     def delete(self):
         self.setParent(None)
-        self.modifier_collection_list.remove(self.modifier_collection)
+        self.cookie_order.modifier_collection_list.remove(self.modifier_collection)
 
 
 class OrderedCookieWidget(QGroupBox):
 
-    def __init__(self, cookie, parent=None):
+    def __init__(self, cookie_order: CookieOrder, parent=None):
         super().__init__(parent=parent)
 
-        self.cookie = cookie
-        self.price_per_cookie = self.cookie['price']
-        self.quantity = 1
-        self.modifier_collection_list = []
+        self.cookie_order = cookie_order
 
         root_layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -56,7 +54,7 @@ class OrderedCookieWidget(QGroupBox):
         header = QHBoxLayout()
         root_layout.addLayout(header)
 
-        name_label = LabelWidget(self.cookie['name'])
+        name_label = LabelWidget(self.cookie_order.cookie.name)
         header.addWidget(name_label, 1)
 
         delete_button = QPushButton("")
@@ -72,16 +70,16 @@ class OrderedCookieWidget(QGroupBox):
 
         self.quantity_spinbox = HorizontalSpinBox()
         self.quantity_spinbox.setRange(1, 100)
-        self.quantity_spinbox.setValue(1)
+        self.quantity_spinbox.setValue(self.cookie_order.quantity)
         self.quantity_spinbox.valueChanged.connect(self.onQuantityChange)
         body.addWidget(self.quantity_spinbox)
 
-        self.price_label = LabelWidget(str(self.price_per_cookie)).setCenter()
+        self.price_label = LabelWidget(str(self.cookie_order.custom_price)).setCenter()
         body.addWidget(self.price_label)
 
         button = QPushButton("+M")
         button.setFixedWidth(SIZE_B)
-        if len(self.cookie['modifiers']) == 0:
+        if len(self.cookie_order.cookie.modifier_list) == 0:
             button.setEnabled(False)
         else:
             button.clicked.connect(self.openAddModifiersDialog)
@@ -102,32 +100,28 @@ class OrderedCookieWidget(QGroupBox):
         self.modifier_collection_container = QVBoxLayout(footer)
 
     def onQuantityChange(self):
-        self.quantity = self.quantity_spinbox.value()
-        self.price_label.setText(str(self.price_per_cookie * self.quantity))
+        self.cookie_order.quantity = self.quantity_spinbox.value()
+        self.price_label.setText(str(self.cookie_order.custom_price * self.cookie_order.quantity))
 
     def renderModifierCollectionList(self):
         for i in reversed(range(self.modifier_collection_container.count())):
             widget = self.modifier_collection_container.itemAt(i).widget()
             if widget:
                 widget.setParent(None)
-        for modifier_collection in self.modifier_collection_list:
-            modifier_item_widget = ModifierCollectionWidget(modifier_collection, self.modifier_collection_list)
+        for modifier_collection in self.cookie_order.modifier_collection_list:
+            modifier_item_widget = ModifierCollectionWidget(modifier_collection, self.cookie_order)
             self.modifier_collection_container.addWidget(modifier_item_widget)
 
     def openAddModifiersDialog(self):
-        dialog = AddModifiersDialog(self.cookie, self.modifier_collection_list)
+        dialog = AddModifiersDialog(self.cookie_order)
         if dialog.exec_():
             self.renderModifierCollectionList()
 
     def openEditPriceDialog(self):
-        dialog = EditPriceDialog(self.price_per_cookie)
+        dialog = EditPriceDialog(self.cookie_order.custom_price)
         if dialog.exec_():
-            self.price_per_cookie = dialog.getPrice()
-            self.price_label.setText(
-                    str(self.price_per_cookie * self.quantity)
-            )
-        else:
-            pass
+            self.cookie_order.custom_price = dialog.getPrice()
+            self.price_label.setText(str(self.cookie_order.custom_price * self.quantity))
 
 
 class OrderWidget(GroupBoxWidget):
@@ -135,11 +129,17 @@ class OrderWidget(GroupBoxWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.app = QApplication.instance()
+        self.order_collection = OrderCollection([], 0.0, 0.0, 0.0, None)
         self.initUI()
 
     def addCookieItem(self, main_cat: int, sub_cat: int, cookie_item: int):
-        cookie = self.app.backend().getCategoryData()[main_cat]['sub_category_list'][sub_cat]['item_list'][cookie_item]
-        cookie_widget = OrderedCookieWidget(cookie)
+        _cookie = self.app.backend().getCategoryData()[main_cat]['sub_category_list'][sub_cat]['item_list'][cookie_item]
+        modifier_list = []
+        for m in _cookie['modifiers']:
+            modifier_list.append(CookieModifier(m['modifier'], m['price']))
+        cookie = Cookie(_cookie['id'], _cookie['name'], _cookie['price'], modifier_list)
+        cookie_order = CookieOrder(cookie, 1, [], cookie.price, '')
+        cookie_widget = OrderedCookieWidget(cookie_order)
         self.cookie_list_layout.insertWidget(self.cookie_list_layout.count() - 1, cookie_widget)
 
     def initUI(self):
