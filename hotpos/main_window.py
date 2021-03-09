@@ -56,6 +56,7 @@ class MainWindow(QWidget):
             self.navigation.show()
             self.navigation.setCurrentTab(page_name)
             self.home_page.show()
+            self.home_page.showMainCategoryList()
         elif page_name == 'take_away':
             self.navigation.show()
             self.navigation.setCurrentTab(page_name)

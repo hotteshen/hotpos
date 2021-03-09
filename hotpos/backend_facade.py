@@ -111,6 +111,7 @@ class BackendFacade():
                 'GET', API_URL + '/categories', data=payload)
         if response.status_code != 200:
             self.category_data = []
+            return
         category_list = response.json()
 
         for category in category_list:

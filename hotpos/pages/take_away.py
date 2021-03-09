@@ -37,7 +37,6 @@ class TakeAwayPage(QWidget):
         root_layout.addWidget(self.order_widget, 1)
 
         self.category_data = self.app.backend().getCategoryData()
-        self.showMainCategoryList()
 
     def showMainCategoryList(self):
         self.cookie_item_list_widget.clear()
