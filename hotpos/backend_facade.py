@@ -19,24 +19,24 @@ class BackendFacade():
 
     def __init__(self) -> None:
         self.settings = QSettings(SETTING_NAME, SETTING_VERSION)
-        self.access_token = ''
+        self.access_token = self.settings.value(KEY_API_TOKEN)
         self.category_data = None
         self.user = None
         self.company_tax = 0.0
 
     def checkToken(self) -> bool:
-        token = self.settings.value(KEY_API_TOKEN)
-        if token is None:
+        if self.access_token is None or self.access_token == '':
             return False
-        payload = {'Authorization': 'Bearer ' + token}
+        payload = {'Authorization': 'Bearer ' + self.access_token}
         response = requests.request(
                 'GET', API_URL + '/categories', data=payload)
         if response.status_code != 200:
             self.settings.setValue(KEY_API_TOKEN, '')
             return False
-        self.access_token = token
+
         self.user = self.getUser()
         self.company_tax = self._getTax()
+
         return True
 
     def companyTax(self) -> float:
@@ -51,12 +51,11 @@ class BackendFacade():
         return response.json()['company_tax']
 
     def getUser(self) -> User:
-        token = self.settings.value(KEY_API_TOKEN)
-        if token is None:
+        if self.access_token is None or self.access_token == '':
             return None
         try:
             options = {'verify_signature': False, 'verify_exp': True, 'verify_nbf': False, 'verify_iat': True, 'verify_aud': False}
-            data = jwt.decode(token, algorithms=["HS256"], options=options)
+            data = jwt.decode(self.access_token, algorithms=["HS256"], options=options)
             return User(data['username'], data['name'], data['branch_id'])
         except:
             return None
