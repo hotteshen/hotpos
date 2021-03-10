@@ -1,6 +1,7 @@
 from datetime import timedelta
 from datetime import date as Date
 import requests
+from typing import List
 from urllib import request
 
 from cachier import cachier
@@ -9,7 +10,7 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPixmap
 
 from .config import API_URL, BASE_URL, RES_PATH, SETTING_NAME, SETTING_VERSION
-from .models import User
+from .models import User, Customer
 
 
 KEY_API_TOKEN = 'token'
@@ -36,7 +37,6 @@ class BackendFacade():
 
         self.user = self.getUser()
         self.company_tax = self._getTax()
-
         return True
 
     def companyTax(self) -> float:
@@ -56,7 +56,7 @@ class BackendFacade():
         try:
             options = {'verify_signature': False, 'verify_exp': True, 'verify_nbf': False, 'verify_iat': True, 'verify_aud': False}
             data = jwt.decode(self.access_token, algorithms=["HS256"], options=options)
-            return User(data['username'], data['name'], data['branch_id'])
+            return User(**data)
         except:
             return None
 
@@ -97,6 +97,28 @@ class BackendFacade():
         except:
             image_map = QPixmap(str(RES_PATH / 'icon.png'))
         return image_map
+
+    def getCustomerList(self) -> List[Customer]:
+        customer_list = []
+        payload = {'Authorization': 'Bearer ' + self.access_token}
+        response = requests.request(
+                'GET', API_URL + '/customers', data=payload)
+        if response.status_code != 200:
+            return customer_list
+        customer_json_list = response.json()
+        for customer_json in customer_json_list:
+            customer_list.append(Customer(
+                    customer_json['id'],
+                    customer_json['first_name'],
+                    customer_json['last_name'],
+                    customer_json['country_id'],
+                    customer_json['district_id'],
+                    customer_json['city_id'],
+                    customer_json['phone_number'],
+                    customer_json['address1'],
+                    customer_json['address2'],
+            ))
+        return customer_list
 
     def getCategoryData(self):
         if self.category_data is not None:

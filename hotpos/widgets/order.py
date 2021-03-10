@@ -25,7 +25,7 @@ class ModifierCollectionWidget(QGroupBox):
         name_label = LabelWidget("Quantity: %d" % self.modifier_collection.quantity)
         root_layout.addWidget(name_label, 1)
 
-        modifiers_string = ", ".join([m.name for m in self.modifier_collection.modifier_list])
+        modifiers_string = ", ".join([m.modifier for m in self.modifier_collection.modifier_list])
         modifier_label = LabelWidget(modifiers_string)
         root_layout.addWidget(modifier_label, 1)
 
@@ -80,7 +80,7 @@ class OrderedCookieWidget(QGroupBox):
 
         button = QPushButton("+M")
         button.setFixedWidth(SIZE_B)
-        if len(self.cookie_order.cookie.modifier_list) == 0:
+        if len(self.cookie_order.cookie.modifiers) == 0:
             button.setEnabled(False)
         else:
             button.clicked.connect(self.openAddModifiersDialog)
@@ -130,16 +130,17 @@ class OrderWidget(GroupBoxWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.app = QApplication.instance()
-        self.order_collection = OrderCollection([], 0.0, 0.0, 0.0, None)
+        self.order_collection = OrderCollection(cookie_order_list=[], tax=0.0, discount=0.0, discount_percentage=0.0, customer=None)
         self.initUI()
 
     def addCookieItem(self, main_cat: int, sub_cat: int, cookie_item: int):
         _cookie = self.app.backend().getCategoryData()[main_cat]['sub_category_list'][sub_cat]['item_list'][cookie_item]
         modifier_list = []
         for m in _cookie['modifiers']:
-            modifier_list.append(CookieModifier(m['modifier'], m['price']))
-        cookie = Cookie(_cookie['id'], _cookie['name'], _cookie['price'], modifier_list)
-        cookie_order = CookieOrder(cookie, 1, [], cookie.price, '')
+            modifier_list.append(CookieModifier(**m))
+        # cookie = Cookie(_cookie['id'], _cookie['name'], _cookie['price'], modifier_list)
+        cookie = Cookie(**_cookie)
+        cookie_order = CookieOrder(cookie=cookie, quantity=1, modifier_collection_list=[], custom_price=cookie.price, note='')
         cookie_widget = OrderedCookieWidget(cookie_order)
         self.cookie_list_layout.insertWidget(self.cookie_list_layout.count() - 1, cookie_widget)
 

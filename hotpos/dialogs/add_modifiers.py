@@ -37,7 +37,7 @@ class ModifierCollectionWidget(QGroupBox):
         body = QVBoxLayout()
         root_layout.addLayout(body)
         for modifier in modifier_collection.modifier_list:
-            body.addWidget(LabelWidget(modifier.name))
+            body.addWidget(LabelWidget(modifier.modifier))
 
         root_layout.addStretch()
 
@@ -91,8 +91,8 @@ class AddModifiersDialog(QDialog):
         gb_root.addWidget(scroll)
 
         self.modifier_checkbox_list = []
-        for modifier in self.cookie_order.cookie.modifier_list:
-            checkbox = QCheckBox(modifier.name)
+        for modifier in self.cookie_order.cookie.modifiers:
+            checkbox = QCheckBox(modifier.modifier)
             checkbox.clicked.connect(self.checkApplicable)
             modifier_checklist_layout.addWidget(checkbox)
             self.modifier_checkbox_list.append(checkbox)
@@ -136,10 +136,10 @@ class AddModifiersDialog(QDialog):
 
     def onApplyClick(self):
         modifier_list = []
-        for i in range(len(self.cookie_order.cookie.modifier_list)):
+        for i in range(len(self.cookie_order.cookie.modifiers)):
             if self.modifier_checkbox_list[i].isChecked():
-                modifier_list.append(self.cookie_order.cookie.modifier_list[i])
-        modifier_collection = CookieModifierCollection(self.quantity, modifier_list)
+                modifier_list.append(self.cookie_order.cookie.modifiers[i])
+        modifier_collection = CookieModifierCollection(quantity=self.quantity, modifier_list=modifier_list)
         self.cookie_order.modifier_collection_list.append(modifier_collection)
         modifier_collection_widget = ModifierCollectionWidget(modifier_collection, self.cookie_order)
         self.modifier_collection_widget_container.insertWidget(self.modifier_collection_widget_container.count() - 1, modifier_collection_widget)
