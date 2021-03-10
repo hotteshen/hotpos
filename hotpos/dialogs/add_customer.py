@@ -1,12 +1,18 @@
+from typing import List
+
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox, QCompleter, QLineEdit, QComboBox
 
 from ..config import DIALOG_MIN_SIZE_D
+from ..models import Customer
 
 
 class AddCustomerDialog(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, customer_list: List[Customer], parent=None):
         super().__init__(parent=parent)
+
+        self.customer_list = customer_list
 
         self.setMinimumSize(*DIALOG_MIN_SIZE_D)
         self.setWindowTitle("Add Customer")
@@ -14,7 +20,9 @@ class AddCustomerDialog(QDialog):
         root_layout = QVBoxLayout(self)
 
         self.search_edit = QLineEdit()
-        completer = QCompleter(["dog", "rabbit", "cock",])
+        name_phone_list = ["%s %s -- %s" % (c.first_name, c.last_name, c.phone_number) for c in self.customer_list]
+        completer = QCompleter(name_phone_list)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.search_edit.setCompleter(completer)
         self.search_edit.setPlaceholderText("Search Customer")
         root_layout.addWidget(self.search_edit)

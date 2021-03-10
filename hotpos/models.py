@@ -79,7 +79,15 @@ class CookieOrder(BaseModel):
 
 class Customer(BaseModel):
 
-    pass
+    id: int
+    first_name: str
+    last_name: str
+    country_id: int
+    district_id: int
+    city_id: int
+    phone_number: str
+    address1: str
+    address2: str
 
 
 class OrderCollection(BaseModel):

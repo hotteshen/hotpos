@@ -36,9 +36,14 @@ class TakeAwayPage(QWidget):
         self.order_widget = OrderWidget()
         root_layout.addWidget(self.order_widget, 1)
 
-        self.category_data = self.app.backend().getCategoryData()
+        self.category_data = []
+
+    def loadCustomerData(self):
+        self.order_widget.loadCustomerData()
 
     def showMainCategoryList(self):
+        self.category_data = self.app.backend().getCategoryData()
+
         self.cookie_item_list_widget.clear()
         self.sub_category_list_widget.clear()
         self.main_category_list_widget.clear()

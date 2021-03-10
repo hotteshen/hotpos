@@ -107,17 +107,7 @@ class BackendFacade():
             return customer_list
         customer_json_list = response.json()
         for customer_json in customer_json_list:
-            customer_list.append(Customer(
-                    customer_json['id'],
-                    customer_json['first_name'],
-                    customer_json['last_name'],
-                    customer_json['country_id'],
-                    customer_json['district_id'],
-                    customer_json['city_id'],
-                    customer_json['phone_number'],
-                    customer_json['address1'],
-                    customer_json['address2'],
-            ))
+            customer_list.append(Customer(**customer_json))
         return customer_list
 
     def getCategoryData(self):

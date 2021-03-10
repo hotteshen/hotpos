@@ -144,6 +144,9 @@ class OrderWidget(GroupBoxWidget):
         cookie_widget = OrderedCookieWidget(cookie_order)
         self.cookie_list_layout.insertWidget(self.cookie_list_layout.count() - 1, cookie_widget)
 
+    def loadCustomerData(self):
+        self.customer_list = self.app.backend().getCustomerList()
+
     def initUI(self):
         root_layout = self.getRootLayout()
 
@@ -225,7 +228,7 @@ class OrderWidget(GroupBoxWidget):
             print("Cancel")
 
     def openAddCustomerDialog(self):
-        dialog = AddCustomerDialog()
+        dialog = AddCustomerDialog(self.customer_list)
         if dialog.exec_():
             print("Ok")
         else:
