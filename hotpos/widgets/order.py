@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
 
 from ..config import RES_PATH, SIZE_A, SIZE_B
@@ -130,7 +130,15 @@ class OrderWidget(GroupBoxWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.app = QApplication.instance()
-        self.order_collection = OrderCollection(cookie_order_list=[], tax=0.0, discount=0.0, discount_percentage=0.0, customer=None)
+        self.order_collection = OrderCollection(
+                cookie_order_list=[],
+                sub_total=0.0,
+                total=0.0,
+                tax=0.0,
+                discount=0.0,
+                discount_percentage=0.0,
+                customer=None
+        )
         self.initUI()
 
     def addCookieItem(self, main_cat: int, sub_cat: int, cookie_item: int):
@@ -188,21 +196,17 @@ class OrderWidget(GroupBoxWidget):
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Discount'), 1)
-        button = QPushButton("")
-        button.setFixedWidth(SIZE_B)
-        button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))
-        button.clicked.connect(self.openAddDiscountDialog)
-        layout.addWidget(button, 0)
+        self.discount_button = LabelWidget("+")
+        self.discount_button.mousePressEvent = self.openAddDiscountDialog
+        layout.addWidget(self.discount_button, 0)
 
         widget = QWidget()
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Customer'), 1)
-        button = QPushButton("")
-        button.setFixedWidth(SIZE_B)
-        button.setIcon(QIcon(str(RES_PATH / 'icon-add.png')))
-        button.clicked.connect(self.openAddCustomerDialog)
-        layout.addWidget(button, 0)
+        self.customer_button = LabelWidget("+")
+        self.customer_button.mousePressEvent = self.openAddCustomerDialog
+        layout.addWidget(self.customer_button, 0)
 
         row = QWidget()
         row_layout = QHBoxLayout(row)
@@ -220,14 +224,18 @@ class OrderWidget(GroupBoxWidget):
         button = QPushButton("CHECKOUT")
         row_layout.addWidget(button, 1)
 
-    def openAddDiscountDialog(self):
-        dialog = AddDiscountDialog(0.0)
+    def openAddDiscountDialog(self, e: QMouseEvent):
+        dialog = AddDiscountDialog(self.order_collection)
         if dialog.exec_():
-            print("Ok")
-        else:
-            print("Cancel")
+            if self.order_collection.discount != 0:
+                self.discount_button.setText(str(self.order_collection.discount))
+            elif self.order_collection.discount_percentage != 0:
+                self.discount_button.setText(str(self.order_collection.discount_percentage) + "%")
+            else:
+                self.discount_button.setText("+")
 
-    def openAddCustomerDialog(self):
+    def openAddCustomerDialog(self, e: QMouseEvent):
+        print(type(e))
         dialog = AddCustomerDialog(self.customer_list)
         if dialog.exec_():
             print("Ok")

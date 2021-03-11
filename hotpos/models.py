@@ -93,6 +93,8 @@ class Customer(BaseModel):
 class OrderCollection(BaseModel):
 
     cookie_order_list: List[CookieOrder]
+    sub_total: float
+    total: float
     tax: float
     discount: float
     discount_percentage: float
