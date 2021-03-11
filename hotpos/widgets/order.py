@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 
 from PyQt5.QtGui import QIcon, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
@@ -8,7 +8,7 @@ from ..dialogs.add_customer import AddCustomerDialog
 from ..dialogs.add_discount import AddDiscountDialog
 from ..dialogs.add_modifiers import AddModifiersDialog
 from ..dialogs.edit_price import EditPriceDialog
-from ..models import Cookie, CookieModifier, CookieOrder, CookieModifierCollection, OrderCollection
+from ..models import Cookie, CookieModifier, CookieOrder, CookieModifierCollection, Customer, OrderCollection, Country
 from .group_box import GroupBoxWidget
 from .horizontal_spinbox import HorizontalSpinBox
 from .label import LabelWidget
@@ -151,7 +151,8 @@ class OrderWidget(GroupBoxWidget):
                 discount_percentage=0.0,
                 customer=None
         )
-        self.customer_list = []
+        self.customer_list: List[Customer] = []
+        self.country_list: List[Country] = []
         self.initUI()
 
     def addCookieItem(self, main_cat: int, sub_cat: int, cookie_item: int):
@@ -170,6 +171,7 @@ class OrderWidget(GroupBoxWidget):
     def loadRemoteData(self):
         self.customer_list = self.app.backend().getCustomerList()
         self.order_collection.tax = self.app.backend().companyTax()
+        self.country_list = self.app.backend().getCountryList()
 
     def initUI(self):
         root_layout = self.getRootLayout()
@@ -257,7 +259,7 @@ class OrderWidget(GroupBoxWidget):
             self.discount_button.setText("+")
 
     def openAddCustomerDialog(self, e: QMouseEvent):
-        dialog = AddCustomerDialog(self.customer_list)
+        dialog = AddCustomerDialog(self.customer_list, self.country_list)
         if dialog.exec_():
             print("Ok")
         else:

@@ -10,7 +10,7 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPixmap
 
 from .config import API_URL, BASE_URL, RES_PATH, SETTING_NAME, SETTING_VERSION
-from .models import User, Customer
+from .models import User, Customer, Country, District, City
 
 
 KEY_API_TOKEN = 'token'
@@ -109,6 +109,42 @@ class BackendFacade():
         for customer_json in customer_json_list:
             customer_list.append(Customer(**customer_json))
         return customer_list
+
+    def getCountryList(self) -> List[Country]:
+        payload = {'Authorization': 'Bearer ' + self.access_token}
+        response = requests.request(
+                'GET', API_URL + '/location', data=payload)
+        if response.status_code != 200:
+            return []
+        json_data = response.json()
+
+        city_json_list = json_data['cities']
+        city_list: List[City] = []
+        for city_json in city_json_list:
+            city = City(**city_json)
+            city_list.append(city)
+
+        district_json_list = json_data['districts']
+        district_list: List[District] = []
+        for district_json in district_json_list:
+            district = District(**district_json)
+            district.city_list = []
+            for city in city_list:
+                if city.district_id == district.id:
+                    district.city_list.append(city)
+            district_list.append(district)
+
+        country_json_list = json_data['countries']
+        country_list: List[Country] = []
+        for country_json in country_json_list:
+            country = Country(**country_json)
+            country.district_list = []
+            for district in district_list:
+                if district.country_id == country.id:
+                    country.district_list.append(district)
+            country_list.append(country)
+
+        return country_list
 
     def getCategoryData(self):
         if self.category_data is not None:

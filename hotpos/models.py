@@ -31,6 +31,39 @@ class Customer(BaseModel):
     address2: str
 
 
+class City(BaseModel):
+
+    id: int
+    name: str
+    district_id: int
+    created_at: str
+    updated_at: str
+
+
+class District(BaseModel):
+
+    id: int
+    name: str
+    country_id: int
+    created_at: str
+    updated_at: str
+    city_list: Union[City, NoneType]
+
+
+class Country(BaseModel):
+
+    id: int
+    name: str
+    nicename: str
+    iso: str
+    # iso3: str
+    # numcode: str
+    phonecode: str
+    created_at: str
+    updated_at: str
+    district_list: Union[District, NoneType]
+
+
 class CookieModifier(BaseModel):
 
     modifier: str
