@@ -38,8 +38,8 @@ class TakeAwayPage(QWidget):
 
         self.category_data = []
 
-    def loadCustomerData(self):
-        self.order_widget.loadCustomerData()
+    def loadRemoteData(self):
+        self.order_widget.loadRemoteData()
 
     def showMainCategoryList(self):
         self.category_data = self.app.backend().getCategoryData()

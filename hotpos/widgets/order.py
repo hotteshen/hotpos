@@ -151,6 +151,7 @@ class OrderWidget(GroupBoxWidget):
                 discount_percentage=0.0,
                 customer=None
         )
+        self.customer_list = []
         self.initUI()
 
     def addCookieItem(self, main_cat: int, sub_cat: int, cookie_item: int):
@@ -166,8 +167,9 @@ class OrderWidget(GroupBoxWidget):
         self.cookie_list_layout.insertWidget(self.cookie_list_layout.count() - 1, cookie_widget)
         self.calculate()
 
-    def loadCustomerData(self):
+    def loadRemoteData(self):
         self.customer_list = self.app.backend().getCustomerList()
+        self.order_collection.tax = self.app.backend().companyTax()
 
     def initUI(self):
         root_layout = self.getRootLayout()
@@ -200,7 +202,7 @@ class OrderWidget(GroupBoxWidget):
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Tax'), 1)
-        self.tax_label = LabelWidget(str(self.app.backend().companyTax()))
+        self.tax_label = LabelWidget(str(self.order_collection.tax))
         layout.addWidget(self.tax_label, 0)
 
         row_layout = QHBoxLayout()
