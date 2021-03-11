@@ -1,3 +1,5 @@
+from typing import Callable
+
 from PyQt5.QtGui import QIcon, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QScrollArea, QSizePolicy, QGroupBox
 
@@ -44,10 +46,12 @@ class ModifierCollectionWidget(QGroupBox):
 
 class OrderedCookieWidget(QGroupBox):
 
-    def __init__(self, cookie_order: CookieOrder, parent=None):
+    def __init__(self, cookie_order: CookieOrder, order_collection: OrderCollection, calculate: Callable, parent=None):
         super().__init__(parent=parent)
 
         self.cookie_order = cookie_order
+        self.order_collection = order_collection
+        self.calculate = calculate
 
         root_layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -62,7 +66,7 @@ class OrderedCookieWidget(QGroupBox):
         delete_button.setFixedHeight(SIZE_A)
         delete_button.setFixedWidth(SIZE_A)
         delete_button.setIcon(QIcon(str(RES_PATH / 'icon-delete.png')))
-        delete_button.clicked.connect(lambda: self.setParent(None))
+        delete_button.clicked.connect(self.delete)
         delete_button.setFixedWidth(SIZE_B)
         header.addWidget(delete_button, 0)
 
@@ -100,9 +104,15 @@ class OrderedCookieWidget(QGroupBox):
         root_layout.addWidget(footer)
         self.modifier_collection_container = QVBoxLayout(footer)
 
+    def delete(self):
+        self.setParent(None)
+        self.order_collection.cookie_order_list.remove(self.cookie_order)
+        self.calculate()
+
     def onQuantityChange(self):
         self.cookie_order.quantity = self.quantity_spinbox.value()
         self.price_label.setText(str(self.cookie_order.custom_price * self.cookie_order.quantity))
+        self.calculate()
 
     def renderModifierCollectionList(self):
         for i in reversed(range(self.modifier_collection_container.count())):
@@ -117,12 +127,14 @@ class OrderedCookieWidget(QGroupBox):
         dialog = AddModifiersDialog(self.cookie_order)
         if dialog.exec_():
             self.renderModifierCollectionList()
+            self.calculate()
 
     def openEditPriceDialog(self):
         dialog = EditPriceDialog(self.cookie_order.custom_price)
         if dialog.exec_():
             self.cookie_order.custom_price = dialog.getPrice()
-            self.price_label.setText(str(self.cookie_order.custom_price * self.quantity))
+            self.price_label.setText(str(self.cookie_order.custom_price * self.cookie_order.quantity))
+            self.calculate()
 
 
 class OrderWidget(GroupBoxWidget):
@@ -149,8 +161,10 @@ class OrderWidget(GroupBoxWidget):
         # cookie = Cookie(_cookie['id'], _cookie['name'], _cookie['price'], modifier_list)
         cookie = Cookie(**_cookie)
         cookie_order = CookieOrder(cookie=cookie, quantity=1, modifier_collection_list=[], custom_price=cookie.price, note='')
-        cookie_widget = OrderedCookieWidget(cookie_order)
+        self.order_collection.cookie_order_list.append(cookie_order)
+        cookie_widget = OrderedCookieWidget(cookie_order, self.order_collection, self.calculate)
         self.cookie_list_layout.insertWidget(self.cookie_list_layout.count() - 1, cookie_widget)
+        self.calculate()
 
     def loadCustomerData(self):
         self.customer_list = self.app.backend().getCustomerList()
@@ -179,7 +193,7 @@ class OrderWidget(GroupBoxWidget):
         layout = QHBoxLayout(widget)
         row_layout.addWidget(widget)
         layout.addWidget(LabelWidget('Sub Total'), 1)
-        self.sub_total_label = LabelWidget('0.00')
+        self.sub_total_label = LabelWidget(str(self.order_collection.sub_total))
         layout.addWidget(self.sub_total_label, 0)
 
         widget = QWidget()
@@ -215,8 +229,8 @@ class OrderWidget(GroupBoxWidget):
         layout = QHBoxLayout()
         row_layout.addLayout(layout)
         layout.addWidget(LabelWidget('Total'), 1)
-        self.sub_total_label = LabelWidget('0.00')
-        layout.addWidget(self.sub_total_label, 0)
+        self.total_label = LabelWidget(str(self.order_collection.total))
+        layout.addWidget(self.total_label, 0)
 
         row_layout = QHBoxLayout()
         root_layout.addLayout(row_layout, 0)
@@ -227,15 +241,20 @@ class OrderWidget(GroupBoxWidget):
     def openAddDiscountDialog(self, e: QMouseEvent):
         dialog = AddDiscountDialog(self.order_collection)
         if dialog.exec_():
-            if self.order_collection.discount != 0:
-                self.discount_button.setText(str(self.order_collection.discount))
-            elif self.order_collection.discount_percentage != 0:
-                self.discount_button.setText(str(self.order_collection.discount_percentage) + "%")
-            else:
-                self.discount_button.setText("+")
+            self.calculate()
+
+    def calculate(self):
+        self.order_collection.calculate()
+        self.sub_total_label.setText(str(self.order_collection.sub_total))
+        self.total_label.setText(str(self.order_collection.total))
+        if self.order_collection.discount != 0:
+            self.discount_button.setText(str(self.order_collection.discount))
+        elif self.order_collection.discount_percentage != 0:
+            self.discount_button.setText(str(self.order_collection.discount_percentage) + "%")
+        else:
+            self.discount_button.setText("+")
 
     def openAddCustomerDialog(self, e: QMouseEvent):
-        print(type(e))
         dialog = AddCustomerDialog(self.customer_list)
         if dialog.exec_():
             print("Ok")

@@ -99,3 +99,17 @@ class OrderCollection(BaseModel):
     discount: float
     discount_percentage: float
     customer: Union[Customer, NoneType]
+
+    def calculate(self):
+        self.sub_total = 0
+        for cookie_order in self.cookie_order_list:
+            self.sub_total += cookie_order.custom_price * cookie_order.quantity
+            for modifier_collection in cookie_order.modifier_collection_list:
+                for modifier in modifier_collection.modifier_list:
+                    self.sub_total -= modifier.price
+        self.total = float(self.sub_total)
+        if self.discount > self.sub_total:
+            self.discount = self.sub_total
+        self.total = self.total - self.discount
+        self.total = self.total * (100 - self.discount_percentage) / 100.0
+        self.total = self.total * (100.0 - self.tax) / 100.0
