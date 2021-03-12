@@ -5,15 +5,18 @@ from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QDialog, QDialogButtonBox,
 from pydantic.typing import NoneType
 
 from ..config import DIALOG_MIN_SIZE_D
-from ..models import Customer, Country, District, City
+from ..models import Customer, Country, District, City, OrderCollection
 
 
 class AddCustomerDialog(QDialog):
 
-    def __init__(self, customer_list: List[Customer], country_list: List[Country], parent=None):
+    def __init__(self, order_collection: OrderCollection, customer_list: List[Customer], country_list: List[Country], parent=None):
         super().__init__(parent=parent)
 
+        self.order_collection = order_collection
+        self.customer: Union[Customer, NoneType] = None
         self.customer_list = customer_list
+        self.customer_search_string_list = [self.getSearchString(c) for c in self.customer_list]
         self.country_list = country_list
         self.country: Union[Country, NoneType] = None
         self.district: Union[District, NoneType] = None
@@ -28,11 +31,11 @@ class AddCustomerDialog(QDialog):
         root_layout = QVBoxLayout(self)
 
         self.search_edit = QLineEdit()
-        name_phone_list = ["%s %s -- %s" % (c.first_name, c.last_name, c.phone_number) for c in self.customer_list]
-        completer = QCompleter(name_phone_list)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.search_edit.setCompleter(completer)
+        self.completer = QCompleter(self.customer_search_string_list)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.search_edit.setCompleter(self.completer)
         self.search_edit.setPlaceholderText("Search Customer")
+        self.search_edit.textChanged.connect(self.onSearchTextInput)
         root_layout.addWidget(self.search_edit)
 
         layout = QHBoxLayout()
@@ -77,8 +80,38 @@ class AddCustomerDialog(QDialog):
         QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         buttonbox = QDialogButtonBox(QBtn)
         root_layout.addWidget(buttonbox)
-        buttonbox.accepted.connect(self.accept)
+        buttonbox.accepted.connect(self.onOkClick)
         buttonbox.rejected.connect(self.reject)
+
+    def onOkClick(self):
+        self.order_collection.customer = self.customer
+        self.accept()
+
+    def onSearchTextInput(self):
+        if self.search_edit.text() in self.customer_search_string_list:
+            for c in self.customer_list:
+                if self.search_edit.text() == self.getSearchString(c):
+                    self.customer = c
+                    self.showCustomer()
+                    break
+
+    def showCustomer(self):
+        if self.customer is None:
+            return
+        self.first_name_edit.setText(self.customer.first_name)
+        self.last_name_edit.setText(self.customer.last_name)
+        self.phone_number_edit.setText(self.customer.phone_number)
+        self.address_edit.setText(self.customer.address1)
+        self.address2_edit.setText(self.customer.address2)
+        for country_index in range(len(self.country_list)):
+            if self.customer.country_id == self.country_list[country_index].id:
+                self.country_combo.setCurrentIndex(country_index)
+        for district_index in range(len(self.country.district_list)):
+            if self.customer.country_id == self.country.district_list[district_index].id:
+                self.district_combo.setCurrentIndex(district_index)
+        for city_index in range(len(self.district.city_list)):
+            if self.customer.country_id == self.district.city_list[city_index].id:
+                self.city_combo.setCurrentIndex(city_index)
 
     def onCountryChange(self):
         self.country = self.country_list[self.country_combo.currentIndex()]
@@ -106,3 +139,6 @@ class AddCustomerDialog(QDialog):
                 self.city = None
         else:
             self.city = None
+
+    def getSearchString(self, c: Customer):
+        return "%s %s -- %s" % (c.first_name, c.last_name, c.phone_number)

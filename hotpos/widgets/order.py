@@ -259,8 +259,8 @@ class OrderWidget(GroupBoxWidget):
             self.discount_button.setText("+")
 
     def openAddCustomerDialog(self, e: QMouseEvent):
-        dialog = AddCustomerDialog(self.customer_list, self.country_list)
+        dialog = AddCustomerDialog(self.order_collection, self.customer_list, self.country_list)
         if dialog.exec_():
-            print("Ok")
+            self.customer_button.setText(self.order_collection.customer.first_name)
         else:
             print("Cancel")
